@@ -1,0 +1,22 @@
+<Application x:Class="VocabTrainer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:VocabTrainer.Presentation.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Presentation/Themes/LightTheme.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Presentation/Themes/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:BoolToVisibilityConverter         x:Key="BoolToVisibility"/>
+            <converters:BoolToInverseVisibilityConverter  x:Key="BoolToInverseVisibility"/>
+            <converters:NullToVisibilityConverter         x:Key="NullToVisibility"/>
+            <converters:NullToInverseVisibilityConverter  x:Key="NullToInverseVisibility"/>
+            <converters:EnumToStringConverter             x:Key="EnumToString"/>
+            <converters:DifficultyToColorConverter        x:Key="DifficultyToColor"/>
+            <converters:PercentageToWidthConverter        x:Key="PercentageToWidth"/>
+            <converters:MultipleChoiceColorConverter      x:Key="McColor"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

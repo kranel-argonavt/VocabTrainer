@@ -1,0 +1,93 @@
+<UserControl x:Class="VocabTrainer.Presentation.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:VocabTrainer.Common"
+             Background="{DynamicResource BackgroundBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24" MaxWidth="640">
+            <TextBlock Style="{StaticResource HeadingText}" Text="{loc:Loc Settings_Title}"/>
+
+            <!-- Training -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource HeadingText}" FontSize="16" Text="{loc:Loc Settings_Training}"/>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_QuestionLang}"/>
+                    <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding QuestionLanguage}" Width="220" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_AnswerLang}"/>
+                    <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding AnswerLanguage}" Width="220" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_DefaultMode}"/>
+                    <ComboBox ItemsSource="{Binding TrainingModes}" SelectedItem="{Binding DefaultTrainingMode}" Width="220" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_WordsPerSession}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Value="{Binding WordsPerSession}" Minimum="5" Maximum="50" Width="250" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding WordsPerSession}" Margin="12,0,0,0" FontWeight="Bold" FontSize="16"
+                                   Foreground="{DynamicResource PrimaryBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Tolerance -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource HeadingText}" FontSize="16" Text="{loc:Loc Settings_Tolerance}"/>
+                    <TextBlock Text="{loc:Loc Settings_ToleranceDesc}" Foreground="{DynamicResource TextSecondaryBrush}"
+                               FontSize="13" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Value="{Binding LevenshteinTolerance}" Minimum="0" Maximum="0.5"
+                                SmallChange="0.05" Width="250" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding LevenshteinTolerance, StringFormat={}{0:P0}}" Margin="12,0,0,0"
+                                   FontWeight="Bold" FontSize="16" Foreground="{DynamicResource PrimaryBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Timer -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource HeadingText}" FontSize="16" Text="{loc:Loc Settings_Timer}"/>
+                    <CheckBox Content="{loc:Loc Settings_EnableTimer}" IsChecked="{Binding TimerMode}" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{loc:Loc Settings_Seconds}" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,10,0"/>
+                        <Slider Value="{Binding TimerSeconds}" Minimum="5" Maximum="120"
+                                Width="200" VerticalAlignment="Center" IsEnabled="{Binding TimerMode}"/>
+                        <TextBlock Text="{Binding TimerSeconds, StringFormat={}{0}s}" Margin="10,0,0,0"
+                                   FontWeight="Bold" FontSize="15" Foreground="{DynamicResource PrimaryBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Appearance -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource HeadingText}" FontSize="16" Text="{loc:Loc Settings_Appearance}"/>
+                    <CheckBox Content="{loc:Loc Settings_DarkTheme}" IsChecked="{Binding DarkTheme}" Margin="0,0,0,10"/>
+                    <CheckBox Content="{loc:Loc Settings_EnableTts}" IsChecked="{Binding EnableTts}" Margin="0,0,0,10"/>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_Language}"/>
+                    <ComboBox ItemsSource="{Binding AppLanguages}" SelectedItem="{Binding InterfaceLanguage}"
+                              Width="220" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Actions -->
+            <StackPanel Orientation="Horizontal" Margin="8,4,8,24">
+                <Button Style="{StaticResource PrimaryButton}" Command="{Binding SaveCommand}"
+                        Content="{loc:Loc Settings_Save}" Width="200" Margin="0,0,12,0"/>
+                <Button Style="{StaticResource DangerButton}" Command="{Binding ResetToDefaultsCommand}"
+                        Width="180" ToolTip="Reset all settings to factory defaults">
+                    🔄  Reset to Defaults
+                </Button>
+            </StackPanel>
+            <!-- Status bar -->
+            <Border Margin="8,0,8,16" Padding="14,8" CornerRadius="8"
+                    Background="#E8F8F0"
+                    Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibility}}">
+                <TextBlock Text="{Binding StatusMessage}" FontSize="13"
+                           Foreground="#27AE60" FontWeight="SemiBold"/>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

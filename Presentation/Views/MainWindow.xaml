@@ -1,0 +1,189 @@
+<Window x:Class="VocabTrainer.Presentation.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:VocabTrainer.Presentation.Views"
+        xmlns:vm="clr-namespace:VocabTrainer.Application.ViewModels"
+        xmlns:loc="clr-namespace:VocabTrainer.Common"
+        Title="VocabTrainer"
+        Height="750" Width="1200" MinHeight="600" MinWidth="900"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BackgroundBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- SIDEBAR -->
+        <Border Background="{DynamicResource SidebarBrush}" Grid.Column="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="16,24,16,20">
+                    <TextBlock Text="📚 VocabTrainer" FontSize="20" FontWeight="Bold"
+                               Foreground="White" FontFamily="Segoe UI"/>
+                    <TextBlock Text="Multilingual Learning" FontSize="11" Foreground="#9DB8D2" Margin="0,4,0,0"/>
+                    <Border Background="#3D5166" CornerRadius="8" Padding="12,8" Margin="0,16,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{Binding GlobalStats.DueToday}" FontSize="22" FontWeight="Bold" Foreground="#5BA8EE"/>
+                                <TextBlock Text="{loc:Loc Home_DueToday}" FontSize="10" Foreground="#9DB8D2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding GlobalStats.TotalWords}" FontSize="22" FontWeight="Bold" Foreground="#2ECC71"/>
+                                <TextBlock Text="{loc:Loc Home_TotalWords}" FontSize="10" Foreground="#9DB8D2"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Margin="8,0">
+                    <Button Style="{StaticResource NavButton}" Command="{Binding NavigateHomeCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🏠" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="{loc:Loc Nav_Home}" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource NavButton}" Command="{Binding NavigateToTrainingCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🎯" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="{loc:Loc Nav_Training}" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource NavButton}" Command="{Binding NavigateToStatisticsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📊" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="{loc:Loc Nav_Statistics}" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource NavButton}" Command="{Binding NavigateToWordManagementCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📝" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="{loc:Loc Nav_ManageWords}" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource NavButton}" Command="{Binding NavigateToImportCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📥" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="{loc:Loc Nav_Import}" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Margin="8,0,8,16">
+                    <Separator/>
+                    <Button Style="{StaticResource NavButton}" Command="{Binding NavigateToSettingsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚙️" FontSize="16" Margin="0,0,10,0"/>
+                            <TextBlock Text="{loc:Loc Nav_Settings}" FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- MAIN CONTENT -->
+        <Grid Grid.Column="1">
+            <!-- Home Dashboard -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Visibility="{Binding CurrentView, Converter={StaticResource NullToInverseVisibility}}">
+                <StackPanel Margin="30,30,30,20">
+                    <TextBlock Style="{StaticResource HeadingText}" Text="{loc:Loc Home_Welcome}" FontSize="28"/>
+                    <TextBlock Style="{StaticResource SubHeadingText}" Text="{loc:Loc Home_Subtitle}"/>
+
+                    <WrapPanel Margin="0,20,0,10">
+                        <Border Style="{StaticResource StatBox}" MinWidth="150">
+                            <StackPanel>
+                                <TextBlock Text="{Binding GlobalStats.TotalWords}" FontSize="32" FontWeight="Bold"
+                                           Foreground="{DynamicResource PrimaryBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Loc Home_TotalWords}" Style="{StaticResource SubHeadingText}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource StatBox}" MinWidth="150">
+                            <StackPanel>
+                                <TextBlock Text="{Binding GlobalStats.LearnedWords}" FontSize="32" FontWeight="Bold"
+                                           Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Loc Home_Learned}" Style="{StaticResource SubHeadingText}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource StatBox}" MinWidth="150">
+                            <StackPanel>
+                                <TextBlock Text="{Binding GlobalStats.DueToday}" FontSize="32" FontWeight="Bold"
+                                           Foreground="{DynamicResource WarningBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Loc Home_DueToday}" Style="{StaticResource SubHeadingText}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource StatBox}" MinWidth="150">
+                            <StackPanel>
+                                <TextBlock Text="{Binding GlobalStats.OverallAccuracy, StringFormat={}{0:F1}%}" FontSize="32" FontWeight="Bold"
+                                           Foreground="{DynamicResource DangerBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Loc Home_Accuracy}" Style="{StaticResource SubHeadingText}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+
+                    <Border Style="{StaticResource Card}" Margin="0,10,0,10">
+                        <StackPanel>
+                            <TextBlock Text="{loc:Loc Home_QuickStart}" Style="{StaticResource HeadingText}" FontSize="18"/>
+                            <WrapPanel>
+                                <Button Style="{StaticResource PrimaryButton}" Command="{Binding NavigateToTrainingCommand}"
+                                        Content="{loc:Loc Home_StartTraining}" Margin="0,0,12,8"/>
+                                <Button Style="{StaticResource SecondaryButton}" Command="{Binding NavigateToWordManagementCommand}"
+                                        Content="{loc:Loc Home_AddWords}" Margin="0,0,12,8"/>
+                                <Button Style="{StaticResource SecondaryButton}" Command="{Binding NavigateToImportCommand}"
+                                        Content="{loc:Loc Home_ImportFile}"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="{loc:Loc Home_Tips}" Style="{StaticResource HeadingText}" FontSize="16"/>
+                            <TextBlock Text="{loc:Loc Home_TipsText}" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" LineHeight="22"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Dynamic View -->
+            <ContentControl Content="{Binding CurrentView}"
+                            Visibility="{Binding CurrentView, Converter={StaticResource NullToVisibility}}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type vm:TrainingViewModel}">
+                        <views:TrainingView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:StatisticsViewModel}">
+                        <views:StatisticsView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:WordManagementViewModel}">
+                        <views:WordManagementView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:ImportViewModel}">
+                        <views:ImportView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                        <views:SettingsView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+
+            <!-- Loading overlay -->
+            <Border Background="#80000000"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="⏳" FontSize="48" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Loading..." Foreground="White" FontSize="18" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

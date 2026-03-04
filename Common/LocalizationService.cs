@@ -1,0 +1,297 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace VocabTrainer.Common
+{
+    public enum AppLanguage { English, Ukrainian }
+
+    public class LocalizationService : INotifyPropertyChanged
+    {
+        public static LocalizationService Instance { get; } = new();
+        private LocalizationService() { }
+
+        private AppLanguage _language = AppLanguage.English;
+        public AppLanguage Language
+        {
+            get => _language;
+            set
+            {
+                if (_language == value) return;
+                _language = value;
+                OnPropertyChanged(string.Empty);
+            }
+        }
+
+        public string this[string key] => Translate(key);
+
+        private string Translate(string key)
+        {
+            var dict = _language == AppLanguage.Ukrainian ? _uk : _en;
+            return dict.TryGetValue(key, out var val) ? val : $"[{key}]";
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        // ── English ───────────────────────────────────────────────────────────
+        private static readonly Dictionary<string, string> _en = new()
+        {
+            [Strings.Nav_Home]            = "Home",
+            [Strings.Nav_Training]        = "Training",
+            [Strings.Nav_Statistics]      = "Statistics",
+            [Strings.Nav_ManageWords]     = "Manage Words",
+            [Strings.Nav_Import]          = "Import Words",
+            [Strings.Nav_Settings]        = "Settings",
+
+            [Strings.Home_Welcome]        = "Welcome back! 👋",
+            [Strings.Home_Subtitle]       = "Here's your learning progress overview",
+            [Strings.Home_TotalWords]     = "Total Words",
+            [Strings.Home_Learned]        = "Learned",
+            [Strings.Home_DueToday]       = "Due Today",
+            [Strings.Home_Accuracy]       = "Accuracy",
+            [Strings.Home_QuickStart]     = "Quick Start",
+            [Strings.Home_StartTraining]  = "🎯  Start Training Session",
+            [Strings.Home_AddWords]       = "➕  Add New Words",
+            [Strings.Home_ImportFile]     = "📥  Import from File",
+            [Strings.Home_Tips]           = "💡 Learning Tips",
+            [Strings.Home_TipsText]       = "• Practice daily for best results\n• Review cards due today first\n• Use Text Input mode for deeper memorization\n• Add example sentences to help remember context",
+
+            [Strings.Training_StartTitle]     = "Start Training",
+            [Strings.Training_SelectMode]     = "Select training mode",
+            [Strings.Training_Flashcard]      = "Flashcard",
+            [Strings.Training_MultiChoice]    = "Multiple Choice",
+            [Strings.Training_TextInput]      = "Text Input",
+            [Strings.Training_Mixed]          = "Mixed",
+            [Strings.Training_WordsPerSession]= "Words per session",
+            [Strings.Training_StartSession]   = "🚀  Start Session",
+            [Strings.Training_ModeLabel]       = "Training Mode",
+            [Strings.Training_Mode]           = "Mode:",
+            [Strings.Training_ShowAnswer]     = "👁  Show Answer",
+            [Strings.Training_KnewIt]         = "✓  I Knew It",
+            [Strings.Training_DidntKnow]      = "✗  Didn't Know",
+            [Strings.Training_CheckAnswer]    = "↩  Check Answer",
+            [Strings.Training_Complete]       = "Session Complete!",
+            [Strings.Training_NewSession]     = "🔄  New Session",
+            [Strings.Training_Correct]        = "Correct",
+            [Strings.Training_Wrong]          = "Wrong",
+            [Strings.Training_Accuracy]       = "Accuracy",
+            [Strings.Training_Time]           = "Time:",
+            [Strings.Training_Question]       = "Question",
+            [Strings.Training_Answer]         = "Answer",
+            [Strings.Training_TypeAnswer]     = "Type your answer...",
+
+            [Strings.Words_Title]         = "📝 Manage Words",
+            [Strings.Words_SelectAll]     = "☑  Select All",
+            [Strings.Words_Clear]         = "☐  Clear",
+            [Strings.Words_Invert]        = "⇄  Invert",
+            [Strings.Words_DeleteSelected] = "🗑️  Delete",
+            [Strings.Words_ExportCsv]     = "📄  Export CSV",
+            [Strings.Words_ExportExcel]   = "📊  Export Excel",
+            [Strings.Words_AddNew]        = "➕  Add Word",
+            [Strings.Words_EditWord]      = "✏️ Edit Word",
+            [Strings.Words_NewWord]       = "➕ New Word",
+            [Strings.Words_German]        = "German *",
+            [Strings.Words_English]       = "English  (variants: cat / kitten)",
+            [Strings.Words_Ukrainian]     = "Ukrainian  (variants: дім / будинок)",
+            [Strings.Words_Example]       = "Example Sentence",
+            [Strings.Words_Tags]          = "Tags (comma-separated)",
+            [Strings.Words_VariantHint]   = "Use / to separate multiple meanings: дім / будинок",
+            [Strings.Words_Reviews]       = "Reviews",
+            [Strings.Words_SuccessRate]   = "Success",
+            [Strings.Words_NextReview]    = "Next Review",
+            [Strings.Words_Difficulty]    = "Difficulty",
+            [Strings.Words_Save]          = "💾  Save",
+            [Strings.Words_Cancel]        = "✕  Cancel",
+            [Strings.Words_DeleteConfirm] = "Delete this word?",
+            [Strings.Words_Search]        = "Search...",
+            [Strings.Words_FilterByTag]   = "Filter by tag",
+            [Strings.Words_SortBy]        = "Sort by",
+            [Strings.Words_Count]         = "words",
+            [Strings.Words_Actions]       = "Actions",
+            [Strings.Words_ResetStats]    = "Reset Stats",
+            [Strings.Words_EnglishHint]   = "English  (variants: cat / kitten)",
+            [Strings.Words_UkrainianHint] = "Ukrainian  (variants: дім / будинок)",
+
+            [Strings.Stats_Title]         = "Statistics",
+            [Strings.Stats_Refresh]       = "↻  Refresh",
+            [Strings.Stats_TotalWords]    = "Total Words",
+            [Strings.Stats_Learned]       = "Learned",
+            [Strings.Stats_Accuracy]      = "Accuracy",
+            [Strings.Stats_Streak]        = "Streak",
+            [Strings.Stats_DueToday]      = "Due today",
+            [Strings.Stats_TotalReviews]  = "Total reviews",
+            [Strings.Stats_NotStarted]    = "Not started",
+            [Strings.Stats_VocabProgress] = "Vocabulary Progress",
+            [Strings.Stats_ProgressLabel] = "learned",
+            [Strings.Stats_DailyActivity] = "Daily Activity — last 30 days",
+            [Strings.Stats_HardestWords]  = "Hardest Words",
+            [Strings.Stats_BestWords]     = "Best Words",
+            [Strings.Stats_Hardest]       = "Hardest Words",
+            [Strings.Stats_Best]          = "Best Words",
+            [Strings.Stats_Daily]         = "Daily Activity (Last 30 Days)",
+            [Strings.Stats_InProgress]    = "In progress",
+
+            [Strings.Import_Title]        = "📥 Import Words",
+            [Strings.Import_Step1]        = "Step 1: Select File",
+            [Strings.Import_Step2]        = "Step 2: Column Mapping (0-indexed)",
+            [Strings.Import_Browse]       = "📂  Browse",
+            [Strings.Import_Separator]    = "Separator:",
+            [Strings.Import_HasHeader]    = "File has header row",
+            [Strings.Import_Preview]      = "👁  Preview",
+            [Strings.Import_DoImport]     = "📥  Import All",
+            [Strings.Import_Reset]        = "↺  Reset",
+            [Strings.Import_PreviewTitle] = "Preview",
+
+            [Strings.Settings_Title]           = "⚙️ Settings",
+            [Strings.Settings_Training]        = "Training",
+            [Strings.Settings_QuestionLang]    = "Question Language",
+            [Strings.Settings_AnswerLang]      = "Answer Language",
+            [Strings.Settings_DefaultMode]     = "Default Training Mode",
+            [Strings.Settings_WordsPerSession] = "Words Per Session",
+            [Strings.Settings_Tolerance]       = "Text Input Tolerance",
+            [Strings.Settings_ToleranceDesc]   = "Levenshtein distance (0 = exact, 0.2 = 20% typos allowed)",
+            [Strings.Settings_Timer]           = "Timer Mode",
+            [Strings.Settings_EnableTimer]     = "Enable Timer Mode",
+            [Strings.Settings_Seconds]         = "Seconds per card:",
+            [Strings.Settings_Appearance]      = "Appearance",
+            [Strings.Settings_DarkTheme]       = "Dark Theme",
+            [Strings.Settings_EnableTts]       = "Enable Text-to-Speech (TTS)",
+            [Strings.Settings_Language]        = "Interface Language",
+            [Strings.Settings_Save]            = "💾  Save Settings",
+            [Strings.Settings_Reset]           = "↺  Reset",
+            [Strings.Settings_Saved]           = "Settings saved successfully.",
+        };
+
+        // ── Ukrainian ─────────────────────────────────────────────────────────
+        private static readonly Dictionary<string, string> _uk = new()
+        {
+            [Strings.Nav_Home]            = "Головна",
+            [Strings.Nav_Training]        = "Тренування",
+            [Strings.Nav_Statistics]      = "Статистика",
+            [Strings.Nav_ManageWords]     = "Слова",
+            [Strings.Nav_Import]          = "Імпорт",
+            [Strings.Nav_Settings]        = "Налаштування",
+
+            [Strings.Home_Welcome]        = "З поверненням! 👋",
+            [Strings.Home_Subtitle]       = "Ось огляд вашого прогресу навчання",
+            [Strings.Home_TotalWords]     = "Всього слів",
+            [Strings.Home_Learned]        = "Вивчено",
+            [Strings.Home_DueToday]       = "На сьогодні",
+            [Strings.Home_Accuracy]       = "Точність",
+            [Strings.Home_QuickStart]     = "Швидкий старт",
+            [Strings.Home_StartTraining]  = "🎯  Почати тренування",
+            [Strings.Home_AddWords]       = "➕  Додати слова",
+            [Strings.Home_ImportFile]     = "📥  Імпортувати з файлу",
+            [Strings.Home_Tips]           = "💡 Поради для навчання",
+            [Strings.Home_TipsText]       = "• Практикуйтесь щодня для кращих результатів\n• Спочатку повторюйте картки, що заплановані на сьогодні\n• Використовуйте режим введення тексту для глибшого запам'ятовування\n• Додавайте приклади речень для кращого розуміння контексту",
+
+            [Strings.Training_StartTitle]     = "Почати тренування",
+            [Strings.Training_SelectMode]     = "Оберіть режим тренування",
+            [Strings.Training_Flashcard]      = "Флеш-картки",
+            [Strings.Training_MultiChoice]    = "Множинний вибір",
+            [Strings.Training_TextInput]      = "Введення тексту",
+            [Strings.Training_Mixed]          = "Змішаний",
+            [Strings.Training_WordsPerSession]= "Слів за сесію",
+            [Strings.Training_StartSession]   = "🚀  Почати сесію",
+            [Strings.Training_ModeLabel]       = "Режим тренування",
+            [Strings.Training_Mode]           = "Режим:",
+            [Strings.Training_ShowAnswer]     = "👁  Показати відповідь",
+            [Strings.Training_KnewIt]         = "✓  Знав(ла)",
+            [Strings.Training_DidntKnow]      = "✗  Не знав(ла)",
+            [Strings.Training_CheckAnswer]    = "↩  Перевірити",
+            [Strings.Training_Complete]       = "Сесію завершено!",
+            [Strings.Training_NewSession]     = "🔄  Нова сесія",
+            [Strings.Training_Correct]        = "Правильно",
+            [Strings.Training_Wrong]          = "Неправильно",
+            [Strings.Training_Accuracy]       = "Точність",
+            [Strings.Training_Time]           = "Час:",
+            [Strings.Training_Question]       = "Питання",
+            [Strings.Training_Answer]         = "Відповідь",
+            [Strings.Training_TypeAnswer]     = "Введіть відповідь...",
+
+            [Strings.Words_Title]         = "📝 Керування словами",
+            [Strings.Words_SelectAll]     = "☑  Вибрати всі",
+            [Strings.Words_Clear]         = "☐  Скинути",
+            [Strings.Words_Invert]        = "⇄  Інвертувати",
+            [Strings.Words_DeleteSelected] = "🗑️  Видалити",
+            [Strings.Words_ExportCsv]     = "📄  Експорт CSV",
+            [Strings.Words_ExportExcel]   = "📊  Експорт Excel",
+            [Strings.Words_AddNew]        = "➕  Додати слово",
+            [Strings.Words_EditWord]      = "✏️ Редагувати слово",
+            [Strings.Words_NewWord]       = "➕ Нове слово",
+            [Strings.Words_German]        = "Німецька *",
+            [Strings.Words_English]       = "Англійська  (варіанти: cat / kitten)",
+            [Strings.Words_Ukrainian]     = "Українська  (варіанти: дім / будинок)",
+            [Strings.Words_Example]       = "Приклад речення",
+            [Strings.Words_Tags]          = "Теги (через кому)",
+            [Strings.Words_VariantHint]   = "Використовуйте / для кількох значень: дім / будинок",
+            [Strings.Words_Reviews]       = "Повторень",
+            [Strings.Words_SuccessRate]   = "Успішність",
+            [Strings.Words_NextReview]    = "Наступне повт.",
+            [Strings.Words_Difficulty]    = "Складність",
+            [Strings.Words_Save]          = "💾  Зберегти",
+            [Strings.Words_Cancel]        = "✕  Скасувати",
+            [Strings.Words_DeleteConfirm] = "Видалити це слово?",
+            [Strings.Words_Search]        = "Пошук...",
+            [Strings.Words_FilterByTag]   = "Фільтр за тегом",
+            [Strings.Words_SortBy]        = "Сортувати за",
+            [Strings.Words_Count]         = "слів",
+            [Strings.Words_Actions]       = "Дії",
+            [Strings.Words_ResetStats]    = "Скинути статистику",
+            [Strings.Words_EnglishHint]   = "Англійська  (варіанти: cat / kitten)",
+            [Strings.Words_UkrainianHint] = "Українська  (варіанти: дім / будинок)",
+
+            [Strings.Stats_Title]         = "Статистика",
+            [Strings.Stats_Refresh]       = "↻  Оновити",
+            [Strings.Stats_TotalWords]    = "Всього слів",
+            [Strings.Stats_Learned]       = "Вивчено",
+            [Strings.Stats_Accuracy]      = "Точність",
+            [Strings.Stats_Streak]        = "Серія",
+            [Strings.Stats_DueToday]      = "На сьогодні",
+            [Strings.Stats_TotalReviews]  = "Всього повторень",
+            [Strings.Stats_NotStarted]    = "Не розпочато",
+            [Strings.Stats_VocabProgress] = "Прогрес словника",
+            [Strings.Stats_ProgressLabel] = "вивчено",
+            [Strings.Stats_DailyActivity] = "Щоденна активність — останні 30 днів",
+            [Strings.Stats_HardestWords]  = "Найважчі слова",
+            [Strings.Stats_BestWords]     = "Найкращі слова",
+            [Strings.Stats_Hardest]       = "Найважчі слова",
+            [Strings.Stats_Best]          = "Найкращі слова",
+            [Strings.Stats_Daily]         = "Щоденна активність (останні 30 днів)",
+            [Strings.Stats_InProgress]    = "В процесі",
+
+            [Strings.Import_Title]        = "📥 Імпорт слів",
+            [Strings.Import_Step1]        = "Крок 1: Виберіть файл",
+            [Strings.Import_Step2]        = "Крок 2: Зіставлення стовпців (з 0)",
+            [Strings.Import_Browse]       = "📂  Огляд",
+            [Strings.Import_Separator]    = "Роздільник:",
+            [Strings.Import_HasHeader]    = "Файл має рядок заголовку",
+            [Strings.Import_Preview]      = "👁  Попередній перегляд",
+            [Strings.Import_DoImport]     = "📥  Імпортувати",
+            [Strings.Import_Reset]        = "↺  Скинути",
+            [Strings.Import_PreviewTitle] = "Попередній перегляд",
+
+            [Strings.Settings_Title]           = "⚙️ Налаштування",
+            [Strings.Settings_Training]        = "Тренування",
+            [Strings.Settings_QuestionLang]    = "Мова питання",
+            [Strings.Settings_AnswerLang]      = "Мова відповіді",
+            [Strings.Settings_DefaultMode]     = "Режим навчання за замовчуванням",
+            [Strings.Settings_WordsPerSession] = "Слів за сесію",
+            [Strings.Settings_Tolerance]       = "Допуск введення тексту",
+            [Strings.Settings_ToleranceDesc]   = "Відстань Левенштейна (0 = точно, 0.2 = 20% помилок)",
+            [Strings.Settings_Timer]           = "Режим таймера",
+            [Strings.Settings_EnableTimer]     = "Увімкнути таймер",
+            [Strings.Settings_Seconds]         = "Секунд на картку:",
+            [Strings.Settings_Appearance]      = "Вигляд",
+            [Strings.Settings_DarkTheme]       = "Темна тема",
+            [Strings.Settings_EnableTts]       = "Увімкнути озвучення (TTS)",
+            [Strings.Settings_Language]        = "Мова інтерфейсу",
+            [Strings.Settings_Save]            = "💾  Зберегти налаштування",
+            [Strings.Settings_Reset]           = "↺  Скинути",
+            [Strings.Settings_Saved]           = "Налаштування збережено.",
+        };
+    }
+}
