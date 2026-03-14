@@ -96,4 +96,35 @@ namespace VocabTrainer.Presentation.Converters
         }
         public object[] ConvertBack(object v, Type[] t, object p, CultureInfo c) => Array.Empty<object>();
     }
+
+    /// <summary>
+    /// Maps CalendarCell.Level (0–4) to a background brush.
+    /// 0 = no activity, 1–4 = green intensity.
+    /// </summary>
+    public class CalendarLevelToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int level = value is int i ? i : 0;
+            return level switch
+            {
+                1 => new SolidColorBrush(Color.FromRgb(187, 247, 208)), // green-200
+                2 => new SolidColorBrush(Color.FromRgb(74,  222, 128)), // green-400
+                3 => new SolidColorBrush(Color.FromRgb(34,  197, 94)),  // green-500
+                4 => new SolidColorBrush(Color.FromRgb(21,  128, 61)),  // green-700
+                _ => new SolidColorBrush(Color.FromRgb(243, 244, 246))  // gray-100 – no activity
+            };
+        }
+        public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Dims cells that belong to adjacent months (IsCurrentMonth = false → opacity 0.3).
+    /// </summary>
+    public class CurrentMonthToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is bool b && b ? 1.0 : 0.25;
+        public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
+    }
 }

@@ -95,12 +95,17 @@ namespace VocabTrainer.Common
         public const string Stats_VocabProgress= nameof(Stats_VocabProgress);
         public const string Stats_ProgressLabel= nameof(Stats_ProgressLabel);
         public const string Stats_DailyActivity= nameof(Stats_DailyActivity);
+        public const string Stats_DailyActivitySub = nameof(Stats_DailyActivitySub);
+        public const string Stats_Less           = nameof(Stats_Less);
+        public const string Stats_More           = nameof(Stats_More);
         public const string Stats_HardestWords = nameof(Stats_HardestWords);
         public const string Stats_BestWords    = nameof(Stats_BestWords);
         public const string Stats_Hardest      = nameof(Stats_Hardest);
         public const string Stats_Best         = nameof(Stats_Best);
         public const string Stats_Daily        = nameof(Stats_Daily);
         public const string Stats_InProgress   = nameof(Stats_InProgress);
+        public const string Stats_AxisCards    = nameof(Stats_AxisCards);
+        public const string Stats_AxisDays     = nameof(Stats_AxisDays);
 
         // Import
         public const string Import_Title       = nameof(Import_Title);

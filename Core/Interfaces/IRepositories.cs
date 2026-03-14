@@ -33,5 +33,6 @@ namespace VocabTrainer.Core.Interfaces
         public DateTime Date { get; set; }
         public int CardsReviewed { get; set; }
         public double Accuracy { get; set; }
+        public bool IsFirstOfMonth => Date.Day == 1;
     }
 }
