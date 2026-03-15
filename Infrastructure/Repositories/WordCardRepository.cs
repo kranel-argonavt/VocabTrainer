@@ -35,9 +35,9 @@ namespace VocabTrainer.Infrastructure.Repositories
         public async Task<List<WordCard>> GetDueTodayAsync()
         {
             await using var ctx = Ctx();
-            var now = DateTime.UtcNow.Date;
+            var today = DateTime.UtcNow.Date;
             return await ctx.WordCards
-                .Where(w => w.NextReview <= now.AddDays(1))
+                .Where(w => w.NextReview <= today)
                 .OrderBy(w => w.NextReview)
                 .ToListAsync();
         }
@@ -113,27 +113,32 @@ namespace VocabTrainer.Infrastructure.Repositories
         public async Task<GlobalStats> GetGlobalStatsAsync()
         {
             await using var ctx = Ctx();
-            var all = await ctx.WordCards.ToListAsync();
-            var total = all.Count;
-            var learned = all.Count(w => w.SuccessRate >= 80 && w.ReviewCount >= 5);
-            var learning = all.Count(w => w.ReviewCount > 0 && !(w.SuccessRate >= 80 && w.ReviewCount >= 5));
-            var newWords = all.Count(w => w.ReviewCount == 0);
-            var due = all.Count(w => w.IsDueToday);
-            var totalAnswers = all.Sum(w => w.CorrectAnswers + w.WrongAnswers);
-            var correct = all.Sum(w => w.CorrectAnswers);
-            double accuracy = totalAnswers == 0 ? 0 : Math.Round((double)correct / totalAnswers * 100, 1);
+            var all    = await ctx.WordCards.ToListAsync();
+            var today  = DateTime.UtcNow.Date;
+            var total  = all.Count;
 
-            // Calculate streak: consecutive days with at least 1 review
-            var reviewDates = all
-                .Where(w => w.LastReviewed.HasValue)
-                .Select(w => w.LastReviewed!.Value.Date)
-                .Distinct()
+            // Learned: reviewed at least once with SuccessRate >= 80%
+            var learned  = all.Count(w => w.ReviewCount >= 1 && w.SuccessRate >= 80);
+            var learning = all.Count(w => w.ReviewCount >= 1 && w.SuccessRate < 80);
+            var newWords = all.Count(w => w.ReviewCount == 0);
+            // Due today: NextReview is today or in the past
+            var due      = all.Count(w => w.NextReview.Date <= today);
+
+            var totalAnswers = all.Sum(w => w.CorrectAnswers + w.WrongAnswers);
+            var correct      = all.Sum(w => w.CorrectAnswers);
+            double accuracy  = totalAnswers == 0 ? 0
+                : Math.Round((double)correct / totalAnswers * 100, 1);
+
+            // Streak: consecutive days with at least 1 review from ReviewHistory
+            var reviewDates = await ctx.ReviewHistory
+                .Where(r => r.CardsReviewed > 0)
+                .Select(r => r.Date)
                 .OrderByDescending(d => d)
-                .ToList();
+                .ToListAsync();
+
             int streak = 0;
-            var today = DateTime.UtcNow.Date;
             var check = reviewDates.Contains(today) ? today : today.AddDays(-1);
-            foreach (var d in reviewDates.OrderByDescending(d => d))
+            foreach (var d in reviewDates)
             {
                 if (d == check) { streak++; check = check.AddDays(-1); }
                 else if (d < check) break;
@@ -141,14 +146,14 @@ namespace VocabTrainer.Infrastructure.Repositories
 
             return new GlobalStats
             {
-                TotalWords    = total,
-                LearnedWords  = learned,
-                LearningWords = learning,
-                NewWords      = newWords,
-                DueToday      = due,
+                TotalWords      = total,
+                LearnedWords    = learned,
+                LearningWords   = learning,
+                NewWords        = newWords,
+                DueToday        = due,
                 OverallAccuracy = accuracy,
-                TotalReviews  = totalAnswers,
-                Streak        = streak,
+                TotalReviews    = totalAnswers,
+                Streak          = streak,
             };
         }
 
@@ -156,23 +161,33 @@ namespace VocabTrainer.Infrastructure.Repositories
         {
             await using var ctx = Ctx();
             var cutoff = DateTime.UtcNow.Date.AddDays(-days);
-            var cards = await ctx.WordCards
-                .Where(w => w.LastReviewed.HasValue && w.LastReviewed.Value >= cutoff)
+            var history = await ctx.ReviewHistory
+                .Where(r => r.Date >= cutoff)
+                .OrderBy(r => r.Date)
                 .ToListAsync();
 
-            return cards
-                .GroupBy(w => w.LastReviewed!.Value.Date)
-                .Select(g => new DailyProgress
-                {
-                    Date = g.Key,
-                    CardsReviewed = g.Count(),
-                    Accuracy = g.Sum(w => w.CorrectAnswers + w.WrongAnswers) == 0
-                        ? 0
-                        : Math.Round((double)g.Sum(w => w.CorrectAnswers) /
-                          g.Sum(w => w.CorrectAnswers + w.WrongAnswers) * 100, 1)
-                })
-                .OrderBy(x => x.Date)
-                .ToList();
+            return history.Select(r => new DailyProgress
+            {
+                Date          = r.Date,
+                CardsReviewed = r.CardsReviewed,
+                Accuracy      = r.CardsReviewed == 0 ? 0
+                    : Math.Round((double)r.CorrectAnswers / r.CardsReviewed * 100, 1)
+            }).ToList();
+        }
+
+        public async Task RecordReviewAsync(bool correct)
+        {
+            await using var ctx = Ctx();
+            var today = DateTime.UtcNow.Date;
+            var row = await ctx.ReviewHistory.FindAsync(today);
+            if (row == null)
+            {
+                row = new ReviewHistory { Date = today };
+                ctx.ReviewHistory.Add(row);
+            }
+            row.CardsReviewed++;
+            if (correct) row.CorrectAnswers++;
+            await ctx.SaveChangesAsync();
         }
     }
 }

@@ -7,6 +7,7 @@ namespace VocabTrainer.Infrastructure.Data
     public class VocabDbContext : DbContext
     {
         public DbSet<WordCard> WordCards { get; set; } = null!;
+        public DbSet<ReviewHistory> ReviewHistory { get; set; } = null!;
 
         public VocabDbContext(DbContextOptions<VocabDbContext> options) : base(options) { }
 
@@ -33,6 +34,12 @@ namespace VocabTrainer.Infrastructure.Data
                 entity.Ignore(e => e.SuccessRate);
                 entity.Ignore(e => e.IsDueToday);
                 entity.Ignore(e => e.Difficulty);
+            });
+
+            modelBuilder.Entity<ReviewHistory>(entity =>
+            {
+                entity.ToTable("ReviewHistory");
+                entity.HasKey(e => e.Date);
             });
         }
     }

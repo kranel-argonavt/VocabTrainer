@@ -37,9 +37,12 @@ namespace VocabTrainer.Common
         public const string Training_Mode          = nameof(Training_Mode);
         public const string Training_ShowAnswer    = nameof(Training_ShowAnswer);
         public const string Training_KnewIt        = nameof(Training_KnewIt);
+        public const string Training_DidNotKnow    = nameof(Training_DidNotKnow);
+        public const string Training_TypeHint      = nameof(Training_TypeHint);
         public const string Training_DidntKnow     = nameof(Training_DidntKnow);
         public const string Training_CheckAnswer   = nameof(Training_CheckAnswer);
         public const string Training_Complete      = nameof(Training_Complete);
+        public const string Training_CompleteSubtitle = nameof(Training_CompleteSubtitle);
         public const string Training_NewSession    = nameof(Training_NewSession);
         public const string Training_Correct       = nameof(Training_Correct);
         public const string Training_Wrong         = nameof(Training_Wrong);

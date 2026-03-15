@@ -10,6 +10,14 @@ namespace VocabTrainer.Infrastructure.Data
     {
         public static async Task SeedAsync(VocabDbContext context)
         {
+            // Ensure ReviewHistory table exists (for databases created before this table was added)
+            await context.Database.ExecuteSqlRawAsync(@"
+                CREATE TABLE IF NOT EXISTS ReviewHistory (
+                    Date TEXT NOT NULL PRIMARY KEY,
+                    CardsReviewed INTEGER NOT NULL DEFAULT 0,
+                    CorrectAnswers INTEGER NOT NULL DEFAULT 0
+                )");
+
             if (await context.WordCards.AnyAsync()) return;
 
             var words = new[]

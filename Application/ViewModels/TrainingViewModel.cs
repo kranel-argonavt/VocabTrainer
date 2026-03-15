@@ -20,7 +20,6 @@ namespace VocabTrainer.Application.ViewModels
         private List<WordCard> _sessionWords = new();
         private int _currentIndex = 0;
         private AppSettings _settings = new();
-        private TrainingMode _effectiveMode;
         private DateTime _sessionStart = DateTime.Now;
 
         // ── Config screen ──────────────────────────────────────────────────────
@@ -43,8 +42,7 @@ namespace VocabTrainer.Application.ViewModels
         [ObservableProperty] private string _inputFeedback = string.Empty;
         [ObservableProperty] private int _timerRemaining;
         [ObservableProperty] private bool _timerActive;
-
-        // ── Session stats ──────────────────────────────────────────────────────
+        [ObservableProperty] private TrainingMode _effectiveMode;
         [ObservableProperty] private int _sessionCorrect;
         [ObservableProperty] private int _sessionWrong;
         [ObservableProperty] private double _sessionAccuracy;
@@ -118,14 +116,14 @@ namespace VocabTrainer.Application.ViewModels
             UserInput = string.Empty;
             Progress = _currentIndex + 1;
 
-            _effectiveMode = CurrentMode == TrainingMode.Mixed
+            EffectiveMode = CurrentMode == TrainingMode.Mixed
                 ? (TrainingMode)_rng.Next(0, 3)
                 : CurrentMode;
 
             QuestionText = CurrentCard.GetDisplayTranslation(_settings.QuestionLanguage);
             AnswerText = CurrentCard.GetDisplayTranslation(_settings.AnswerLanguage);
 
-            if (_effectiveMode == TrainingMode.MultipleChoice)
+            if (EffectiveMode == TrainingMode.MultipleChoice)
             {
                 var options = await _trainingService.GetMultipleChoiceOptionsAsync(CurrentCard);
                 MultipleChoiceOptions.Clear();
@@ -142,7 +140,7 @@ namespace VocabTrainer.Application.ViewModels
                 MultipleChoiceOptions.Clear();
             }
 
-            if (_settings.TimerMode && _effectiveMode != TrainingMode.Flashcard)
+            if (_settings.TimerMode && EffectiveMode != TrainingMode.Flashcard)
                 StartTimer();
         }
 

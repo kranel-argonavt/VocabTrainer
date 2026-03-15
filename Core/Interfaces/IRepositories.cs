@@ -20,6 +20,7 @@ namespace VocabTrainer.Core.Interfaces
         Task DeleteAsync(int id);
         Task<GlobalStats> GetGlobalStatsAsync();
         Task<List<DailyProgress>> GetDailyProgressAsync(int days = 30);
+        Task RecordReviewAsync(bool correct);
     }
 
     public interface ISettingsRepository

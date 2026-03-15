@@ -30,6 +30,7 @@ namespace VocabTrainer.Infrastructure.Services
         {
             _srs.ApplyResult(card, isCorrect);
             await _repository.UpdateAsync(card);
+            await _repository.RecordReviewAsync(isCorrect);
             return isCorrect;
         }
 

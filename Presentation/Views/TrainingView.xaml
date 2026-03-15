@@ -49,7 +49,31 @@
                                                             RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                 </Border.InputBindings>
                                 <StackPanel>
-                                    <Border Background="#4A90D9" CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center"><TextBlock Text="F" FontSize="22" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#4A90D9"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
+                                                        <Setter Property="Background" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="F" FontSize="22" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
+                                                            <Setter Property="Foreground" Value="#4A90D9"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
                                     <TextBlock Text="{loc:Loc Training_Flashcard}" FontSize="14" FontWeight="Bold"
                                                HorizontalAlignment="Center" Margin="0,6,0,2">
                                         <TextBlock.Style>
@@ -99,7 +123,31 @@
                                                             RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                 </Border.InputBindings>
                                 <StackPanel>
-                                    <Border Background="#27AE60" CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center"><TextBlock Text="?" FontSize="22" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#27AE60"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
+                                                        <Setter Property="Background" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="?" FontSize="22" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
+                                                            <Setter Property="Foreground" Value="#27AE60"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
                                     <TextBlock Text="{loc:Loc Training_MultiChoice}" FontSize="14" FontWeight="Bold"
                                                HorizontalAlignment="Center" Margin="0,6,0,2">
                                         <TextBlock.Style>
@@ -149,7 +197,31 @@
                                                             RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                 </Border.InputBindings>
                                 <StackPanel>
-                                    <Border Background="#8E44AD" CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center"><TextBlock Text="T" FontSize="22" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#8E44AD"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
+                                                        <Setter Property="Background" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="T" FontSize="22" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
+                                                            <Setter Property="Foreground" Value="#8E44AD"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
                                     <TextBlock Text="{loc:Loc Training_TextInput}" FontSize="14" FontWeight="Bold"
                                                HorizontalAlignment="Center" Margin="0,6,0,2">
                                         <TextBlock.Style>
@@ -199,7 +271,31 @@
                                                             RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                 </Border.InputBindings>
                                 <StackPanel>
-                                    <Border Background="#E67E22" CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center"><TextBlock Text="*" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#E67E22"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
+                                                        <Setter Property="Background" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="*" FontSize="24" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
+                                                            <Setter Property="Foreground" Value="#E67E22"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
                                     <TextBlock Text="{loc:Loc Training_Mixed}" FontSize="14" FontWeight="Bold"
                                                HorizontalAlignment="Center" Margin="0,6,0,2">
                                         <TextBlock.Style>
@@ -277,44 +373,63 @@
                 HorizontalAlignment="Center" VerticalAlignment="Center" Width="460">
             <Border Style="{StaticResource Card}" Padding="40">
                 <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="🎉" FontSize="72" HorizontalAlignment="Center"/>
+                    <!-- Theme-aware trophy icon -->
+                    <Border Width="80" Height="80" CornerRadius="40"
+                            Background="{DynamicResource AccentBrush}"
+                            HorizontalAlignment="Center" Margin="0,0,0,4">
+                        <TextBlock Text="🏆" FontSize="38"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
                     <TextBlock Text="{loc:Loc Training_Complete}" FontSize="26" FontWeight="Bold"
                                Foreground="{DynamicResource TextPrimaryBrush}"
                                HorizontalAlignment="Center" Margin="0,10,0,4"/>
-                    <TextBlock Text="Great work! Here's your performance:"
+                    <TextBlock Text="{loc:Loc Training_CompleteSubtitle}"
                                FontSize="14" Foreground="{DynamicResource TextSecondaryBrush}"
                                HorizontalAlignment="Center" Margin="0,0,0,24"/>
-                    <WrapPanel HorizontalAlignment="Center" Margin="0,0,0,20">
-                        <Border Background="#E8F8F0" CornerRadius="10" Padding="20,14" Margin="6">
+                    <!-- Row 1: Correct + Wrong -->
+                    <UniformGrid Rows="1" Columns="2" Margin="0,0,0,8">
+                        <Border Background="{DynamicResource HoverBrush}" CornerRadius="10"
+                                Padding="20,14" Margin="0,0,4,0">
                             <StackPanel>
                                 <TextBlock Text="{Binding SessionCorrect}" FontSize="28" FontWeight="Bold"
-                                           Foreground="#27AE60" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{loc:Loc Training_Correct}" FontSize="12" Foreground="#7F8C8D" HorizontalAlignment="Center"/>
+                                           Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Loc Training_Correct}" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>
-                        <Border Background="#FDEDEC" CornerRadius="10" Padding="20,14" Margin="6">
+                        <Border Background="{DynamicResource HoverBrush}" CornerRadius="10"
+                                Padding="20,14" Margin="4,0,0,0">
                             <StackPanel>
                                 <TextBlock Text="{Binding SessionWrong}" FontSize="28" FontWeight="Bold"
-                                           Foreground="#E74C3C" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{loc:Loc Training_Wrong}" FontSize="12" Foreground="#7F8C8D" HorizontalAlignment="Center"/>
+                                           Foreground="{DynamicResource DangerBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{loc:Loc Training_Wrong}" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>
-                        <Border Background="#EBF5FB" CornerRadius="10" Padding="20,14" Margin="6">
-                            <StackPanel>
-                                <TextBlock Text="{Binding SessionAccuracy, StringFormat={}{0:F1}%}"
-                                           FontSize="28" FontWeight="Bold"
-                                           Foreground="#4A90D9" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{loc:Loc Training_Accuracy}" FontSize="12" Foreground="#7F8C8D" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-                    </WrapPanel>
-                    <TextBlock Text="{Binding SessionDuration, StringFormat=Time: {0}}"
-                               FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"
-                               HorizontalAlignment="Center" Margin="0,0,0,24"/>
+                    </UniformGrid>
+                    <!-- Row 2: Accuracy centered -->
+                    <Border Background="{DynamicResource HoverBrush}" CornerRadius="10"
+                            Padding="20,14" Margin="0,0,0,20"
+                            HorizontalAlignment="Center" MinWidth="180">
+                        <StackPanel>
+                            <TextBlock Text="{Binding SessionAccuracy, StringFormat={}{0:F1}%}"
+                                       FontSize="28" FontWeight="Bold"
+                                       Foreground="#4A90D9" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{loc:Loc Training_Accuracy}" FontSize="12"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,24">
+                        <TextBlock Text="{loc:Loc Training_Time}" FontSize="13"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding SessionDuration}" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                     <Button Style="{StaticResource PrimaryButton}"
-                            Command="{Binding RestartSessionCommand}" Width="220">
-                        🔄  New Session
-                    </Button>
+                            Command="{Binding RestartSessionCommand}" Width="220"
+                            Content="{loc:Loc Training_NewSession}"/>
                 </StackPanel>
             </Border>
         </Border>
@@ -394,7 +509,8 @@
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
                                 MaxWidth="600" Margin="0,20">
 
-                        <TextBlock Text="Question" FontSize="11" FontWeight="SemiBold"
+                        <!-- Question (all modes) -->
+                        <TextBlock Text="{loc:Loc Training_Question}" FontSize="11" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextSecondaryBrush}"
                                    HorizontalAlignment="Center" Margin="0,0,0,8"/>
                         <TextBlock Text="{Binding QuestionText}" FontSize="44" FontWeight="Bold"
@@ -416,10 +532,24 @@
                                    Visibility="{Binding CurrentCard.Tags,
                                                 Converter={StaticResource NullToVisibility}}"/>
 
-                        <!-- Flashcard answer -->
+                        <!-- ── FLASHCARD: revealed answer ── -->
                         <StackPanel Visibility="{Binding ShowAnswer, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ShowAnswer}" Value="True"/>
+                                                <Condition Binding="{Binding EffectiveMode}" Value="Flashcard"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
                             <Separator Margin="40,0,40,16"/>
-                            <TextBlock Text="Answer" FontSize="11" FontWeight="SemiBold"
+                            <TextBlock Text="{loc:Loc Training_Answer}" FontSize="11" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        HorizontalAlignment="Center" Margin="0,0,0,8"/>
                             <TextBlock Text="{Binding AnswerText}" FontSize="34" FontWeight="SemiBold"
@@ -428,8 +558,18 @@
                                        TextWrapping="Wrap"/>
                         </StackPanel>
 
-                        <!-- Multiple choice -->
+                        <!-- ── MULTIPLE CHOICE: option buttons ── -->
                         <ItemsControl ItemsSource="{Binding MultipleChoiceOptions}" Margin="0,8,0,0">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EffectiveMode}" Value="MultipleChoice">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Margin="0,5" Height="50" BorderThickness="0" Cursor="Hand"
@@ -458,35 +598,45 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <!-- Text input -->
-                        <StackPanel Margin="0,8,0,0"
-                                    Visibility="{Binding InputValidated, Converter={StaticResource BoolToInverseVisibility}}">
+                        <!-- ── TEXT INPUT: text box + feedback ── -->
+                        <StackPanel>
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EffectiveMode}" Value="TextInput">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
                             <TextBox Style="{StaticResource ModernTextBox}"
                                      Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="18" Padding="12,10" HorizontalAlignment="Stretch"
-                                     ToolTip="Type the translation and press Enter">
+                                     FontSize="18" Padding="12,10" Margin="0,8,0,0"
+                                     HorizontalAlignment="Stretch"
+                                     IsEnabled="{Binding InputValidated, Converter={StaticResource BoolToInverseVisibility}}"
+                                     ToolTip="{loc:Loc Training_TypeHint}">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Return" Command="{Binding ValidateInputCommand}"/>
                                 </TextBox.InputBindings>
                             </TextBox>
+                            <TextBlock Text="{Binding InputFeedback}" FontSize="16" FontWeight="SemiBold"
+                                       HorizontalAlignment="Center" TextAlignment="Center" Margin="0,14,0,0"
+                                       Visibility="{Binding InputValidated, Converter={StaticResource BoolToVisibility}}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding InputCorrect}" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding InputCorrect}" Value="False">
+                                                <Setter Property="Foreground" Value="{DynamicResource DangerBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </StackPanel>
-
-                        <TextBlock Text="{Binding InputFeedback}" FontSize="16" FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" TextAlignment="Center" Margin="0,14,0,0"
-                                   Visibility="{Binding InputValidated, Converter={StaticResource BoolToVisibility}}">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InputCorrect}" Value="True">
-                                            <Setter Property="Foreground" Value="#27AE60"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding InputCorrect}" Value="False">
-                                            <Setter Property="Foreground" Value="#E74C3C"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
 
                     </StackPanel>
                 </ScrollViewer>
@@ -494,54 +644,71 @@
 
             <!-- Action buttons -->
             <StackPanel Grid.Row="3" HorizontalAlignment="Center" Margin="0,14,0,0">
-                <!-- Show Answer (Flashcard only, before reveal, no MC options) -->
-                <Button Command="{Binding RevealAnswerCommand}" Width="200" Margin="0,0,0,10">
+
+                <!-- FLASHCARD: Show Answer button (before reveal) -->
+                <Button Command="{Binding RevealAnswerCommand}" Width="220" Height="48" Margin="0,0,0,10">
                     <Button.Style>
                         <Style BasedOn="{StaticResource SecondaryButton}" TargetType="Button">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding EffectiveMode}" Value="Flashcard"/>
                                         <Condition Binding="{Binding ShowAnswer}" Value="False"/>
-                                        <Condition Binding="{Binding MultipleChoiceOptions.Count}" Value="0"/>
-                                        <Condition Binding="{Binding InputValidated}" Value="False"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    👁  Show Answer
+                    <Button.Content><loc:Loc Key="Training_ShowAnswer"/></Button.Content>
                 </Button>
 
-                <!-- Knew It / Didn't Know (after reveal) -->
-                <StackPanel Orientation="Horizontal"
-                            Visibility="{Binding ShowAnswer, Converter={StaticResource BoolToVisibility}}">
+                <!-- FLASHCARD: Knew It / Didn't Know (after reveal) -->
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding EffectiveMode}" Value="Flashcard"/>
+                                        <Condition Binding="{Binding ShowAnswer}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                     <Button Style="{StaticResource SuccessButton}" Command="{Binding KnewItCommand}"
-                            Width="180" Height="50" Margin="0,0,16,0">✓  I Knew It</Button>
+                            Width="180" Height="50" Margin="0,0,16,0">
+                        <Button.Content><loc:Loc Key="Training_KnewIt"/></Button.Content>
+                    </Button>
                     <Button Style="{StaticResource DangerButton}" Command="{Binding DidNotKnowCommand}"
-                            Width="180" Height="50">✗  Didn't Know</Button>
+                            Width="180" Height="50">
+                        <Button.Content><loc:Loc Key="Training_DidNotKnow"/></Button.Content>
+                    </Button>
                 </StackPanel>
 
-                <!-- Check Answer (Text Input mode) -->
-                <Button Command="{Binding ValidateInputCommand}" Width="200">
+                <!-- TEXT INPUT: Check Answer button -->
+                <Button Command="{Binding ValidateInputCommand}" Width="220" Height="48">
                     <Button.Style>
                         <Style BasedOn="{StaticResource PrimaryButton}" TargetType="Button">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ShowAnswer}" Value="False"/>
+                                        <Condition Binding="{Binding EffectiveMode}" Value="TextInput"/>
                                         <Condition Binding="{Binding InputValidated}" Value="False"/>
-                                        <Condition Binding="{Binding MultipleChoiceOptions.Count}" Value="0"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    ↩  Check Answer
+                    <Button.Content><loc:Loc Key="Training_CheckAnswer"/></Button.Content>
                 </Button>
+
             </StackPanel>
         </Grid>
 
