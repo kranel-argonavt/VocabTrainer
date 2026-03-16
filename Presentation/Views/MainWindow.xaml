@@ -34,7 +34,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="{Binding GlobalStats.DueToday}" FontSize="22" FontWeight="Bold" Foreground="#5BA8EE"/>
+                                <TextBlock Text="{Binding GlobalStats.DueToday}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource DangerBrush}"/>
                                 <TextBlock Text="{loc:Loc Home_DueToday}" FontSize="10" Foreground="#9DB8D2"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1">
@@ -117,7 +117,7 @@
                         <Border Style="{StaticResource StatBox}" MinWidth="150">
                             <StackPanel>
                                 <TextBlock Text="{Binding GlobalStats.DueToday}" FontSize="32" FontWeight="Bold"
-                                           Foreground="{DynamicResource WarningBrush}" HorizontalAlignment="Center"/>
+                                           Foreground="{DynamicResource DangerBrush}" HorizontalAlignment="Center"/>
                                 <TextBlock Text="{loc:Loc Home_DueToday}" Style="{StaticResource SubHeadingText}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>

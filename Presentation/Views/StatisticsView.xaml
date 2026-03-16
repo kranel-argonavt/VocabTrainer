@@ -116,7 +116,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock Text="{Binding GlobalStats.DueToday}" FontSize="22" FontWeight="Bold"
-                                       Foreground="#EF4444"/>
+                                       Foreground="{DynamicResource DangerBrush}"/>
                             <TextBlock Text="{loc:Loc Stats_DueToday}" FontSize="12"
                                        Foreground="{DynamicResource TextSecondaryBrush}"/>
                         </StackPanel>

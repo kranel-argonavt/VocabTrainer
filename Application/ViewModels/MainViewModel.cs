@@ -50,6 +50,7 @@ namespace VocabTrainer.Application.ViewModels
             var vm = _sp.GetRequiredService<StatisticsViewModel>();
             await vm.LoadAsync();
             CurrentView = vm;
+            await RefreshStats();
         }
 
         [RelayCommand]
@@ -78,6 +79,13 @@ namespace VocabTrainer.Application.ViewModels
         private void NavigateHome()
         {
             CurrentView = null;
+        }
+
+        partial void OnCurrentViewChanged(BaseViewModel? value)
+        {
+            // Refresh home screen stats whenever we return to home (null = home)
+            if (value == null)
+                _ = RefreshStats();
         }
 
         public async Task RefreshStats()
