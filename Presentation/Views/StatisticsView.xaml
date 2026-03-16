@@ -169,6 +169,7 @@
             <!-- ── Vocabulary progress bar ── -->
             <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="18,14">
                 <StackPanel>
+                    <!-- Header -->
                     <Grid Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -177,22 +178,38 @@
                         <TextBlock Grid.Column="0" Text="{loc:Loc Stats_VocabProgress}"
                                    FontSize="14" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <!-- Counts: X learned · Y in progress · Z not started -->
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <TextBlock Text="{Binding GlobalStats.LearnedPercent, StringFormat={}{0:F1}%}"
+                            <TextBlock Text="{Binding GlobalStats.LearnedWords}"
                                        FontSize="13" FontWeight="SemiBold" Foreground="#22C55E"/>
-                            <TextBlock Text=" " FontSize="13"/>
-                            <TextBlock Text="{loc:Loc Stats_ProgressLabel}" FontSize="13"
+                            <TextBlock Text="{loc:Loc Stats_Learned}" FontSize="13"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" Margin="3,0,10,0"/>
+                            <TextBlock Text="{Binding GlobalStats.LearningWords}"
+                                       FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource WarningBrush}"/>
+                            <TextBlock Text="{loc:Loc Stats_InProgress}" FontSize="13"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" Margin="3,0,10,0"/>
+                            <TextBlock Text="{Binding GlobalStats.NewWords}"
+                                       FontSize="13" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            <TextBlock Text="{loc:Loc Stats_NotStarted}" FontSize="13"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" Margin="3,0,0,0"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Height="14">
-                        <Border CornerRadius="7" Background="{DynamicResource HoverBrush}"/>
-                        <ProgressBar Minimum="0"
-                                     Maximum="{Binding GlobalStats.TotalWords}"
-                                     Value="{Binding GlobalStats.LearnedWords}"
-                                     Height="14" Background="Transparent" BorderThickness="0"
-                                     Foreground="#22C55E"/>
-                    </Grid>
+
+                    <!-- Three-segment progress bar -->
+                    <Border x:Name="ProgressBarContainer" Height="14" CornerRadius="7"
+                            Background="{DynamicResource HoverBrush}"
+                            SizeChanged="ProgressBar_SizeChanged">
+                        <Grid>
+                            <!-- Learned (green) + In Progress (yellow) combined clip -->
+                            <Border x:Name="BarLearned" CornerRadius="7" HorizontalAlignment="Left"
+                                    Background="#22C55E" Width="0"/>
+                            <Border x:Name="BarLearning" CornerRadius="7" HorizontalAlignment="Left"
+                                    Background="{DynamicResource WarningBrush}" Width="0"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Legend -->
                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                         <Ellipse Width="9" Height="9" Fill="#22C55E" VerticalAlignment="Center"/>
                         <TextBlock Text="{loc:Loc Stats_Learned}" FontSize="11"

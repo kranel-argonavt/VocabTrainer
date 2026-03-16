@@ -17,13 +17,15 @@ namespace VocabTrainer.Core.Entities
     public class GlobalStats
     {
         public int TotalWords { get; set; }
-        public int LearnedWords { get; set; }    // SuccessRate >= 80 and ReviewCount >= 5
-        public int LearningWords { get; set; }   // In progress
-        public int NewWords { get; set; }        // ReviewCount == 0
+        public int LearnedWords { get; set; }
+        public int LearningWords { get; set; }
+        public int NewWords { get; set; }
         public int DueToday { get; set; }
         public double OverallAccuracy { get; set; }
         public int TotalReviews { get; set; }
-        public int Streak { get; set; }          // Consecutive days practiced
-        public double LearnedPercent => TotalWords == 0 ? 0 : Math.Round((double)LearnedWords / TotalWords * 100, 1);
+        public int Streak { get; set; }
+        public double LearnedPercent  => TotalWords == 0 ? 0 : Math.Round((double)LearnedWords  / TotalWords * 100, 1);
+        public double LearningPercent => TotalWords == 0 ? 0 : Math.Round((double)LearningWords / TotalWords * 100, 1);
+        public double NewPercent      => TotalWords == 0 ? 0 : Math.Round((double)NewWords      / TotalWords * 100, 1);
     }
 }

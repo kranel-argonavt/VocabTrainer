@@ -127,4 +127,20 @@ namespace VocabTrainer.Presentation.Converters
             => value is bool b && b ? 1.0 : 0.25;
         public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
     }
+
+    /// <summary>
+    /// Converts a percentage (0–100 double) to a GridLength star value.
+    /// A value of 0 returns GridLength(0) so the column collapses completely.
+    /// </summary>
+    public class PercentToGridLengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double pct = value is double d ? d : 0;
+            return pct <= 0
+                ? new GridLength(0)
+                : new GridLength(pct, GridUnitType.Star);
+        }
+        public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
+    }
 }
