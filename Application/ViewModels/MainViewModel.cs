@@ -40,6 +40,7 @@ namespace VocabTrainer.Application.ViewModels
         private async Task NavigateToTraining()
         {
             var vm = _sp.GetRequiredService<TrainingViewModel>();
+            vm.OnSessionCompleted = () => _ = RefreshStats();
             await vm.InitializeAsync();
             CurrentView = vm;
         }

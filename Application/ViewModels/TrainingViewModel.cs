@@ -53,6 +53,9 @@ namespace VocabTrainer.Application.ViewModels
 
         private CancellationTokenSource? _timerCts;
 
+        /// <summary>Called by MainViewModel to get notified when a session ends.</summary>
+        public Action? OnSessionCompleted { get; set; }
+
         public TrainingViewModel(ITrainingService trainingService, ISettingsRepository settingsRepo)
         {
             _trainingService = trainingService;
@@ -106,6 +109,7 @@ namespace VocabTrainer.Application.ViewModels
             {
                 SessionComplete = true;
                 UpdateSessionDisplay();
+                OnSessionCompleted?.Invoke();
                 return;
             }
 
@@ -120,8 +124,9 @@ namespace VocabTrainer.Application.ViewModels
                 ? (TrainingMode)_rng.Next(0, 3)
                 : CurrentMode;
 
-            QuestionText = CurrentCard.GetDisplayTranslation(_settings.QuestionLanguage);
-            AnswerText = CurrentCard.GetDisplayTranslation(_settings.AnswerLanguage);
+            // Show one random variant for question (not all "/" separated)
+            QuestionText = PickVariant(CurrentCard.GetTranslation(_settings.QuestionLanguage));
+            AnswerText   = CurrentCard.GetDisplayTranslation(_settings.AnswerLanguage);
 
             if (EffectiveMode == TrainingMode.MultipleChoice)
             {
@@ -130,9 +135,10 @@ namespace VocabTrainer.Application.ViewModels
                 foreach (var opt in options)
                     MultipleChoiceOptions.Add(new MultipleChoiceOption
                     {
-                        Text = opt.GetDisplayTranslation(_settings.AnswerLanguage),
+                        // Show one random variant per option button
+                        Text      = PickVariant(opt.GetTranslation(_settings.AnswerLanguage)),
                         IsCorrect = opt.Id == CurrentCard.Id,
-                        Card = opt
+                        Card      = opt
                     });
             }
             else
@@ -142,6 +148,14 @@ namespace VocabTrainer.Application.ViewModels
 
             if (_settings.TimerMode && EffectiveMode != TrainingMode.Flashcard)
                 StartTimer();
+        }
+
+        /// <summary>Returns one random variant from a "/" separated string.</summary>
+        private string PickVariant(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return raw;
+            var parts = raw.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            return parts.Length == 0 ? raw : parts[_rng.Next(parts.Length)];
         }
 
         [RelayCommand]
