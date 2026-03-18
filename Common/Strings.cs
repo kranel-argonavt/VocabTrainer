@@ -31,6 +31,10 @@ namespace VocabTrainer.Common
         public const string Training_MultiChoice   = nameof(Training_MultiChoice);
         public const string Training_TextInput     = nameof(Training_TextInput);
         public const string Training_Mixed         = nameof(Training_Mixed);
+        public const string Training_FlashcardDesc  = nameof(Training_FlashcardDesc);
+        public const string Training_MultiChoiceDesc = nameof(Training_MultiChoiceDesc);
+        public const string Training_TextInputDesc   = nameof(Training_TextInputDesc);
+        public const string Training_MixedDesc       = nameof(Training_MixedDesc);
         public const string Training_WordsPerSession = nameof(Training_WordsPerSession);
         public const string Training_StartSession  = nameof(Training_StartSession);
         public const string Training_ModeLabel      = nameof(Training_ModeLabel);

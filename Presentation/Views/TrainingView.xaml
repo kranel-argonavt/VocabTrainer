@@ -87,7 +87,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="Show &amp; reveal" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Loc Training_FlashcardDesc}" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
@@ -161,7 +161,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="Pick the right answer" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Loc Training_MultiChoiceDesc}" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
@@ -235,7 +235,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="Type the translation" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Loc Training_TextInputDesc}" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
@@ -309,7 +309,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="Random each card" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Loc Training_MixedDesc}" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
