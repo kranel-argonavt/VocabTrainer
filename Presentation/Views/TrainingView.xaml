@@ -21,6 +21,59 @@
                            FontSize="14" Foreground="{DynamicResource TextSecondaryBrush}"
                            HorizontalAlignment="Center" Margin="0,0,0,32"/>
 
+                <!-- ── Language selection ── -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="{loc:Loc Training_LangLabel}" FontSize="15" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,14"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Question language -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{loc:Loc Training_QuestionLang}" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                <Border Background="{DynamicResource BackgroundBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1.5" CornerRadius="8" Padding="10,8">
+                                    <ComboBox ItemsSource="{Binding AvailableLanguages}"
+                                              SelectedItem="{Binding QuestionLanguage}"
+                                              BorderThickness="0" Background="Transparent"
+                                              FontSize="14" FontWeight="SemiBold"
+                                              Foreground="{DynamicResource TextPrimaryBrush}"
+                                              HorizontalAlignment="Stretch"/>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Arrow -->
+                            <TextBlock Grid.Column="1" Text="→" FontSize="20"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Margin="0,18,0,0"/>
+
+                            <!-- Answer language -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="{loc:Loc Training_AnswerLang}" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                <Border Background="{DynamicResource BackgroundBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1.5" CornerRadius="8" Padding="10,8">
+                                    <ComboBox ItemsSource="{Binding AvailableLanguages}"
+                                              SelectedItem="{Binding AnswerLanguage}"
+                                              BorderThickness="0" Background="Transparent"
+                                              FontSize="14" FontWeight="SemiBold"
+                                              Foreground="{DynamicResource TextPrimaryBrush}"
+                                              HorizontalAlignment="Stretch"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
                 <!-- Training Mode -->
                 <Border Style="{StaticResource Card}">
                     <StackPanel>
@@ -87,7 +140,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_FlashcardDesc}" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="Show &amp; reveal" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
@@ -161,7 +214,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_MultiChoiceDesc}" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="Pick the right answer" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
@@ -235,7 +288,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_TextInputDesc}" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="Type the translation" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
@@ -309,7 +362,7 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_MixedDesc}" FontSize="11" HorizontalAlignment="Center">
+                                    <TextBlock Text="Random each card" FontSize="11" HorizontalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
