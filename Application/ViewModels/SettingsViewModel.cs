@@ -12,8 +12,10 @@ namespace VocabTrainer.Application.ViewModels
     {
         private readonly ISettingsRepository _settingsRepo;
 
-        [ObservableProperty] private Language _questionLanguage = Language.German;
-        [ObservableProperty] private Language _answerLanguage = Language.English;
+        // Language choice is managed by TrainingViewModel — kept here only for round-trip saving
+        private Language _questionLanguage = Language.German;
+        private Language _answerLanguage   = Language.Ukrainian;
+
         [ObservableProperty] private int _wordsPerSession = 10;
         [ObservableProperty] private bool _darkTheme;
         [ObservableProperty] private bool _enableTts;
@@ -23,16 +25,14 @@ namespace VocabTrainer.Application.ViewModels
         [ObservableProperty] private double _levenshteinTolerance = 0.2;
         [ObservableProperty] private AppLanguage _interfaceLanguage = AppLanguage.English;
 
-        public ObservableCollection<Language> Languages { get; } = new(System.Enum.GetValues<Language>());
         public ObservableCollection<TrainingMode> TrainingModes { get; } = new(System.Enum.GetValues<TrainingMode>());
-        public ObservableCollection<AppLanguage> AppLanguages { get; } = new(System.Enum.GetValues<AppLanguage>());
+        public ObservableCollection<AppLanguage>  AppLanguages  { get; } = new(System.Enum.GetValues<AppLanguage>());
 
         public SettingsViewModel(ISettingsRepository settingsRepo)
         {
             _settingsRepo = settingsRepo;
         }
 
-        /// <summary>Called every time user navigates to Settings tab.</summary>
         public async Task LoadAsync()
         {
             var s = await _settingsRepo.LoadAsync();
@@ -43,30 +43,30 @@ namespace VocabTrainer.Application.ViewModels
 
         private void ApplyToFields(AppSettings s)
         {
-            QuestionLanguage    = s.QuestionLanguage;
-            AnswerLanguage      = s.AnswerLanguage;
-            WordsPerSession     = s.WordsPerSession;
-            DarkTheme           = s.DarkTheme;
-            EnableTts           = s.EnableTts;
-            TimerMode           = s.TimerMode;
-            TimerSeconds        = s.TimerSeconds;
-            DefaultTrainingMode = s.DefaultTrainingMode;
+            _questionLanguage    = s.QuestionLanguage;
+            _answerLanguage      = s.AnswerLanguage;
+            WordsPerSession      = s.WordsPerSession;
+            DarkTheme            = s.DarkTheme;
+            EnableTts            = s.EnableTts;
+            TimerMode            = s.TimerMode;
+            TimerSeconds         = s.TimerSeconds;
+            DefaultTrainingMode  = s.DefaultTrainingMode;
             LevenshteinTolerance = s.LevenshteinTolerance;
-            InterfaceLanguage   = s.InterfaceLanguage;
+            InterfaceLanguage    = s.InterfaceLanguage;
         }
 
         private AppSettings ToSettings() => new()
         {
-            QuestionLanguage    = QuestionLanguage,
-            AnswerLanguage      = AnswerLanguage,
-            WordsPerSession     = WordsPerSession,
-            DarkTheme           = DarkTheme,
-            EnableTts           = EnableTts,
-            TimerMode           = TimerMode,
-            TimerSeconds        = TimerSeconds,
-            DefaultTrainingMode = DefaultTrainingMode,
+            QuestionLanguage     = _questionLanguage,
+            AnswerLanguage       = _answerLanguage,
+            WordsPerSession      = WordsPerSession,
+            DarkTheme            = DarkTheme,
+            EnableTts            = EnableTts,
+            TimerMode            = TimerMode,
+            TimerSeconds         = TimerSeconds,
+            DefaultTrainingMode  = DefaultTrainingMode,
             LevenshteinTolerance = LevenshteinTolerance,
-            InterfaceLanguage   = InterfaceLanguage,
+            InterfaceLanguage    = InterfaceLanguage,
         };
 
         [RelayCommand]
@@ -82,7 +82,7 @@ namespace VocabTrainer.Application.ViewModels
         [RelayCommand]
         private async Task ResetToDefaults()
         {
-            var defaults = new AppSettings(); // all default values
+            var defaults = new AppSettings();
             ApplyToFields(defaults);
             await _settingsRepo.SaveAsync(defaults);
             ApplyTheme(defaults.DarkTheme);

@@ -6,369 +6,418 @@
              Background="{DynamicResource BackgroundBrush}">
     <Grid>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- PRE-SESSION CONFIG SCREEN                                          -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- Config screen -->
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding IsConfiguring, Converter={StaticResource BoolToVisibility}}">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                        MaxWidth="520" Margin="24">
+                        MaxWidth="900" Margin="24">
 
                 <TextBlock Text="{loc:Loc Training_StartTitle}" FontSize="30" FontWeight="Bold"
                            Foreground="{DynamicResource TextPrimaryBrush}"
                            HorizontalAlignment="Center" Margin="0,24,0,6"/>
                 <TextBlock Text="{loc:Loc Training_SelectMode}"
                            FontSize="14" Foreground="{DynamicResource TextSecondaryBrush}"
-                           HorizontalAlignment="Center" Margin="0,0,0,32"/>
+                           HorizontalAlignment="Center" Margin="0,0,0,24"/>
 
-                <!-- Training Mode -->
-                <Border Style="{StaticResource Card}">
-                    <StackPanel>
-                        <TextBlock Text="{loc:Loc Training_ModeLabel}" FontSize="15" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,14"/>
-                        <UniformGrid Columns="2" Rows="2">
-                            <!-- Flashcard -->
-                            <Border x:Name="FlashcardOption" Margin="4" CornerRadius="10"
-                                    Cursor="Hand" Padding="16,14">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-                                        <Setter Property="BorderThickness" Value="2"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
-                                                <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding DataContext.SetModeFlashcardCommand,
-                                                            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                </Border.InputBindings>
-                                <StackPanel>
-                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#4A90D9"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
-                                                        <Setter Property="Background" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="F" FontSize="22" FontWeight="Bold"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="White"/>
+                <!-- Two-column layout -->
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- LEFT: Languages + Words per session -->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Language selection -->
+                        <Border Grid.Row="0" Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="{loc:Loc Training_LangLabel}" FontSize="15" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,14"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="28"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{loc:Loc Training_QuestionLang}" FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                        <ComboBox ItemsSource="{Binding AvailableLanguages}"
+                                                  SelectedItem="{Binding QuestionLanguage}"
+                                                  HorizontalAlignment="Stretch"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Text="→" FontSize="18"
+                                               Foreground="{DynamicResource AccentBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                               Margin="0,0,0,6"/>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="{loc:Loc Training_AnswerLang}" FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                        <ComboBox ItemsSource="{Binding AvailableLanguages}"
+                                                  SelectedItem="{Binding AnswerLanguage}"
+                                                  HorizontalAlignment="Stretch"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Words per session -->
+                        <Border Grid.Row="2" Style="{StaticResource Card}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{loc:Loc Training_WordsPerSession}"
+                                               FontSize="15" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <Border Grid.Column="1" Background="{DynamicResource PrimaryBrush}"
+                                            CornerRadius="6" Padding="12,4">
+                                        <TextBlock Text="{Binding WordsPerSession}" FontSize="16"
+                                                   FontWeight="Bold" Foreground="White"/>
+                                    </Border>
+                                </Grid>
+                                <Slider Value="{Binding WordsPerSession}" Minimum="5" Maximum="50"
+                                        TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <TextBlock Text="5" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                    <TextBlock Text="25" Margin="98,0,0,0"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                    <TextBlock Text="50" Margin="98,0,0,0"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- RIGHT: Training mode -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="{loc:Loc Training_ModeLabel}" FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,14"/>
+                            <UniformGrid Columns="2" Rows="2">
+
+                                <!-- Flashcard -->
+                                <Border x:Name="FlashcardOption" Margin="4" CornerRadius="10" Cursor="Hand" Padding="16,14">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
+                                                    <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding DataContext.SetModeFlashcardCommand,
+                                                                RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </Border.InputBindings>
+                                    <StackPanel>
+                                        <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#4A90D9"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
-                                                            <Setter Property="Foreground" Value="#4A90D9"/>
+                                                            <Setter Property="Background" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="F" FontSize="22" FontWeight="Bold"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
+                                                                <Setter Property="Foreground" Value="#4A90D9"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                        <TextBlock Text="{loc:Loc Training_Flashcard}" FontSize="14" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" Margin="0,6,0,2">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
+                                                            <Setter Property="Foreground" Value="White"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                    </Border>
-                                    <TextBlock Text="{loc:Loc Training_Flashcard}" FontSize="14" FontWeight="Bold"
-                                               HorizontalAlignment="Center" Margin="0,6,0,2">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
-                                                        <Setter Property="Foreground" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_FlashcardDesc}" FontSize="11" HorizontalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
-                                                        <Setter Property="Foreground" Value="#CCE8FF"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Multiple Choice -->
-                            <Border Margin="4" CornerRadius="10" Cursor="Hand" Padding="16,14">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-                                        <Setter Property="BorderThickness" Value="2"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
-                                                <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding DataContext.SetModeMultipleChoiceCommand,
-                                                            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                </Border.InputBindings>
-                                <StackPanel>
-                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#27AE60"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
-                                                        <Setter Property="Background" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="?" FontSize="22" FontWeight="Bold"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{loc:Loc Training_FlashcardDesc}" FontSize="11" HorizontalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Flashcard">
+                                                            <Setter Property="Foreground" Value="#CCE8FF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Multiple Choice -->
+                                <Border Margin="4" CornerRadius="10" Cursor="Hand" Padding="16,14">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
+                                                    <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding DataContext.SetModeMultipleChoiceCommand,
+                                                                RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </Border.InputBindings>
+                                    <StackPanel>
+                                        <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#27AE60"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
-                                                            <Setter Property="Foreground" Value="#27AE60"/>
+                                                            <Setter Property="Background" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="?" FontSize="22" FontWeight="Bold"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
+                                                                <Setter Property="Foreground" Value="#27AE60"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                        <TextBlock Text="{loc:Loc Training_MultiChoice}" FontSize="14" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" Margin="0,6,0,2">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
+                                                            <Setter Property="Foreground" Value="White"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                    </Border>
-                                    <TextBlock Text="{loc:Loc Training_MultiChoice}" FontSize="14" FontWeight="Bold"
-                                               HorizontalAlignment="Center" Margin="0,6,0,2">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
-                                                        <Setter Property="Foreground" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_MultiChoiceDesc}" FontSize="11" HorizontalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
-                                                        <Setter Property="Foreground" Value="#CCE8FF"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Text Input -->
-                            <Border Margin="4" CornerRadius="10" Cursor="Hand" Padding="16,14">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-                                        <Setter Property="BorderThickness" Value="2"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
-                                                <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding DataContext.SetModeTextInputCommand,
-                                                            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                </Border.InputBindings>
-                                <StackPanel>
-                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#8E44AD"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
-                                                        <Setter Property="Background" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="T" FontSize="22" FontWeight="Bold"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{loc:Loc Training_MultiChoiceDesc}" FontSize="11" HorizontalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="MultipleChoice">
+                                                            <Setter Property="Foreground" Value="#CCE8FF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Text Input -->
+                                <Border Margin="4" CornerRadius="10" Cursor="Hand" Padding="16,14">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
+                                                    <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding DataContext.SetModeTextInputCommand,
+                                                                RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </Border.InputBindings>
+                                    <StackPanel>
+                                        <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#8E44AD"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
-                                                            <Setter Property="Foreground" Value="#8E44AD"/>
+                                                            <Setter Property="Background" Value="White"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </Border>
-                                    <TextBlock Text="{loc:Loc Training_TextInput}" FontSize="14" FontWeight="Bold"
-                                               HorizontalAlignment="Center" Margin="0,6,0,2">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
+                                            </Border.Style>
+                                            <TextBlock Text="T" FontSize="22" FontWeight="Bold"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
                                                         <Setter Property="Foreground" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_TextInputDesc}" FontSize="11" HorizontalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
-                                                        <Setter Property="Foreground" Value="#CCE8FF"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Mixed -->
-                            <Border Margin="4" CornerRadius="10" Cursor="Hand" Padding="16,14">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-                                        <Setter Property="BorderThickness" Value="2"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
-                                                <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding DataContext.SetModeMixedCommand,
-                                                            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                </Border.InputBindings>
-                                <StackPanel>
-                                    <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#E67E22"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
-                                                        <Setter Property="Background" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="*" FontSize="24" FontWeight="Bold"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
+                                                                <Setter Property="Foreground" Value="#8E44AD"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                        <TextBlock Text="{loc:Loc Training_TextInput}" FontSize="14" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" Margin="0,6,0,2">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
-                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
-                                                            <Setter Property="Foreground" Value="#E67E22"/>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
+                                                            <Setter Property="Foreground" Value="White"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                    </Border>
-                                    <TextBlock Text="{loc:Loc Training_Mixed}" FontSize="14" FontWeight="Bold"
-                                               HorizontalAlignment="Center" Margin="0,6,0,2">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
-                                                        <Setter Property="Foreground" Value="White"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <TextBlock Text="{loc:Loc Training_MixedDesc}" FontSize="11" HorizontalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
-                                                        <Setter Property="Foreground" Value="#CCE8FF"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
-                    </StackPanel>
-                </Border>
+                                        <TextBlock Text="{loc:Loc Training_TextInputDesc}" FontSize="11" HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="TextInput">
+                                                            <Setter Property="Foreground" Value="#CCE8FF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
 
-                <!-- Words per session slider -->
-                <Border Style="{StaticResource Card}" Margin="8,0,8,8">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{loc:Loc Training_WordsPerSession}"
-                                       FontSize="15" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <Border Grid.Column="1" Background="{DynamicResource PrimaryBrush}"
-                                    CornerRadius="6" Padding="12,4">
-                                <TextBlock Text="{Binding WordsPerSession}" FontSize="16"
-                                           FontWeight="Bold" Foreground="White"/>
-                            </Border>
-                        </Grid>
-                        <Slider Value="{Binding WordsPerSession}" Minimum="5" Maximum="50"
-                                TickFrequency="5" IsSnapToTickEnabled="True"
-                                Margin="0,12,0,0"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                            <TextBlock Text="5" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
-                            <TextBlock Text="25" Margin="98,0,0,0"
-                                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
-                            <TextBlock Text="50" Margin="98,0,0,0"
-                                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
+                                <!-- Mixed -->
+                                <Border Margin="4" CornerRadius="10" Cursor="Hand" Padding="16,14">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
+                                                    <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick"
+                                                      Command="{Binding DataContext.SetModeMixedCommand,
+                                                                RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                    </Border.InputBindings>
+                                    <StackPanel>
+                                        <Border CornerRadius="10" Width="48" Height="48" HorizontalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#E67E22"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
+                                                            <Setter Property="Background" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="*" FontSize="24" FontWeight="Bold"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
+                                                                <Setter Property="Foreground" Value="#E67E22"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                        <TextBlock Text="{loc:Loc Training_Mixed}" FontSize="14" FontWeight="Bold"
+                                                   HorizontalAlignment="Center" Margin="0,6,0,2">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="{loc:Loc Training_MixedDesc}" FontSize="11" HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentMode}" Value="Mixed">
+                                                            <Setter Property="Foreground" Value="#CCE8FF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+
+                            </UniformGrid>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </Border>
+
+                </Grid>
 
                 <!-- Start button -->
                 <Button Style="{StaticResource PrimaryButton}"
                         Command="{Binding StartSessionCommand}"
                         Content="{loc:Loc Training_StartSession}"
-                        Height="54" FontSize="17" Margin="8,8,8,32"/>
+                        Height="54" FontSize="17" Margin="0,0,0,32"/>
 
             </StackPanel>
         </ScrollViewer>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- SESSION COMPLETE                                                   -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+        <!-- Session complete -->
         <Border Visibility="{Binding SessionComplete, Converter={StaticResource BoolToVisibility}}"
                 HorizontalAlignment="Center" VerticalAlignment="Center" Width="460">
             <Border Style="{StaticResource Card}" Padding="40">
@@ -434,9 +483,7 @@
             </Border>
         </Border>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- ACTIVE TRAINING                                                    -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- Active training -->
         <Grid Margin="24">
             <Grid.Style>
                 <Style TargetType="Grid">
