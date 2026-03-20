@@ -33,22 +33,16 @@ namespace VocabTrainer.Application.ViewModels
         public ObservableCollection<Language> AvailableLanguages { get; } =
             new(System.Enum.GetValues<Language>());
 
-        /// <summary>True when question == answer — blocks Start button.</summary>
-        public bool LanguagesInvalid => QuestionLanguage == AnswerLanguage;
-
         partial void OnQuestionLanguageChanged(Language value)
         {
-            // Auto-fix collision: push answer to the next different language
             if (AnswerLanguage == value)
                 AnswerLanguage = AvailableLanguages.First(l => l != value);
-            OnPropertyChanged(nameof(LanguagesInvalid));
         }
 
         partial void OnAnswerLanguageChanged(Language value)
         {
             if (QuestionLanguage == value)
                 QuestionLanguage = AvailableLanguages.First(l => l != value);
-            OnPropertyChanged(nameof(LanguagesInvalid));
         }
 
         // ── Card state ─────────────────────────────────────────────────────────
@@ -92,13 +86,13 @@ namespace VocabTrainer.Application.ViewModels
         {
             IsLoading = true;
             _settings = await _settingsRepo.LoadAsync();
-            CurrentMode     = _settings.DefaultTrainingMode;
-            WordsPerSession = _settings.WordsPerSession;
+            CurrentMode      = _settings.DefaultTrainingMode;
+            WordsPerSession  = _settings.WordsPerSession;
             QuestionLanguage = _settings.QuestionLanguage;
             AnswerLanguage   = _settings.AnswerLanguage;
-            SessionComplete = false;
-            IsLoading = false;
-            IsConfiguring = true;
+            SessionComplete  = false;
+            IsLoading        = false;
+            IsConfiguring    = true;
         }
 
         // ── Mode selection on config screen ───────────────────────────────────
@@ -111,7 +105,7 @@ namespace VocabTrainer.Application.ViewModels
         [RelayCommand]
         private async Task StartSession()
         {
-            // Save language choice to settings
+            // Save selected languages to settings
             _settings.QuestionLanguage = QuestionLanguage;
             _settings.AnswerLanguage   = AnswerLanguage;
             await _settingsRepo.SaveAsync(_settings);

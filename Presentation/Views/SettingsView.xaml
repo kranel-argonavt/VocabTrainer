@@ -11,6 +11,10 @@
             <Border Style="{StaticResource Card}">
                 <StackPanel>
                     <TextBlock Style="{StaticResource HeadingText}" FontSize="16" Text="{loc:Loc Settings_Training}"/>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_QuestionLang}"/>
+                    <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding QuestionLanguage}" Width="220" HorizontalAlignment="Left"/>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_AnswerLang}"/>
+                    <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding AnswerLanguage}" Width="220" HorizontalAlignment="Left"/>
                     <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_DefaultMode}"/>
                     <ComboBox ItemsSource="{Binding TrainingModes}" SelectedItem="{Binding DefaultTrainingMode}" Width="220" HorizontalAlignment="Left"/>
                     <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_WordsPerSession}"/>
