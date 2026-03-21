@@ -6,7 +6,7 @@ namespace VocabTrainer.Core.Interfaces
 {
     public interface ITrainingService
     {
-        Task<List<WordCard>> GetSessionWordsAsync(int count);
+        Task<List<WordCard>> GetSessionWordsAsync(int count, IReadOnlyList<string>? tags = null);
         Task<bool> ProcessAnswerAsync(WordCard card, bool isCorrect);
         Task<List<WordCard>> GetMultipleChoiceOptionsAsync(WordCard correct, int totalOptions = 4);
         bool ValidateTextInput(string userInput, string expectedAnswer, double tolerance);
