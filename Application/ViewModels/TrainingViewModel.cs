@@ -45,6 +45,47 @@ namespace VocabTrainer.Application.ViewModels
                 QuestionLanguage = AvailableLanguages.First(l => l != value);
         }
 
+        // ── Tag filter ────────────────────────────────────────────────────────
+        [ObservableProperty] private string _tagSearchQuery = string.Empty;
+        [ObservableProperty] private int    _filteredWordCount;
+
+        /// <summary>All tags from DB, filtered by TagSearchQuery for display.</summary>
+        public ObservableCollection<TagItem> AvailableTags  { get; } = new();
+
+        /// <summary>Tags the user has pinned/selected.</summary>
+        public ObservableCollection<TagItem> SelectedTags   { get; } = new();
+
+        partial void OnTagSearchQueryChanged(string value) => ApplyTagSearch();
+
+        private void ApplyTagSearch()
+        {
+            var q = TagSearchQuery.Trim().ToLowerInvariant();
+            foreach (var tag in AvailableTags)
+                tag.IsVisible = q.Length == 0 || tag.Name.ToLowerInvariant().Contains(q);
+        }
+
+        [RelayCommand]
+        private async Task ToggleTag(TagItem tag)
+        {
+            if (SelectedTags.Contains(tag))
+            {
+                SelectedTags.Remove(tag);
+                tag.IsSelected = false;
+            }
+            else
+            {
+                SelectedTags.Add(tag);
+                tag.IsSelected = true;
+            }
+            await RefreshFilteredCountAsync();
+        }
+
+        private async Task RefreshFilteredCountAsync()
+        {
+            var tags = SelectedTags.Select(t => t.Name).ToList();
+            FilteredWordCount = await _trainingService.GetFilteredCountAsync(tags);
+        }
+
         // ── Card state ─────────────────────────────────────────────────────────
         [ObservableProperty] private WordCard? _currentCard;
         [ObservableProperty] private bool _showAnswer;
@@ -90,6 +131,21 @@ namespace VocabTrainer.Application.ViewModels
             WordsPerSession  = _settings.WordsPerSession;
             QuestionLanguage = _settings.QuestionLanguage;
             AnswerLanguage   = _settings.AnswerLanguage;
+
+            // Load tags from DB — preserve selected ones across sessions within same app run
+            var selected = SelectedTags.Select(t => t.Name).ToHashSet();
+            var allTags  = await _trainingService.GetAllTagsAsync();
+            AvailableTags.Clear();
+            foreach (var name in allTags)
+            {
+                var item = new TagItem(name) { IsSelected = selected.Contains(name) };
+                AvailableTags.Add(item);
+                if (item.IsSelected && !SelectedTags.Any(t => t.Name == name))
+                    SelectedTags.Add(item);
+            }
+            ApplyTagSearch();
+            await RefreshFilteredCountAsync();
+
             SessionComplete  = false;
             IsLoading        = false;
             IsConfiguring    = true;
@@ -112,7 +168,10 @@ namespace VocabTrainer.Application.ViewModels
 
             IsConfiguring = false;
             IsLoading = true;
-            _sessionWords = await _trainingService.GetSessionWordsAsync(WordsPerSession);
+            var tags = SelectedTags.Count > 0
+                ? SelectedTags.Select(t => t.Name).ToList()
+                : null;
+            _sessionWords = await _trainingService.GetSessionWordsAsync(WordsPerSession, tags);
             _currentIndex = 0;
             _sessionStart = DateTime.Now;
             SessionCorrect = 0;
@@ -278,14 +337,5 @@ namespace VocabTrainer.Application.ViewModels
                 TimerActive = false;
             }, CancellationToken.None);
         }
-    }
-
-    public partial class MultipleChoiceOption : ObservableObject
-    {
-        [ObservableProperty] private string _text = string.Empty;
-        [ObservableProperty] private bool _isCorrect;
-        [ObservableProperty] private bool _isSelected;
-        [ObservableProperty] private bool _showResult;
-        public WordCard Card { get; set; } = null!;
     }
 }
