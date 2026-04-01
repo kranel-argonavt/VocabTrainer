@@ -48,28 +48,73 @@ namespace VocabTrainer.Infrastructure.Repositories
             return await ctx.WordCards.Where(w => w.Tags.Contains(tag)).ToListAsync();
         }
 
+        public async Task<List<string>> GetAllTagsAsync()
+        {
+            await using var ctx = Ctx();
+            var allTags = await ctx.WordCards
+                .Where(w => w.Tags != null && w.Tags != string.Empty)
+                .Select(w => w.Tags)
+                .ToListAsync();
+
+            return allTags
+                .SelectMany(t => t.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                .Distinct()
+                .OrderBy(t => t)
+                .ToList();
+        }
+
+        public async Task<int> GetFilteredCountAsync(IReadOnlyList<string> tags)
+        {
+            await using var ctx = Ctx();
+            if (tags == null || tags.Count == 0)
+                return await ctx.WordCards.CountAsync();
+
+            var all = await ctx.WordCards.ToListAsync();
+            return all.Count(w => MatchesTags(w.Tags, tags));
+        }
+
+        /// <summary>OR logic: card matches if it has at least one of the selected tags.</summary>
+        private static bool MatchesTags(string cardTags, IReadOnlyList<string> selectedTags)
+        {
+            if (string.IsNullOrWhiteSpace(cardTags)) return false;
+            var cardTagSet = cardTags
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            return selectedTags.Any(t => cardTagSet.Contains(t));
+        }
+
+        public async Task<List<WordCard>> GetSessionWordsAsync(int count, Language questionLang, Language answerLang, IReadOnlyList<string>? tags = null)
+        {
+            List<WordCard> pool;
+            await using var ctx = Ctx();
+            var all = await ctx.WordCards.ToListAsync();
+
+            pool = (tags != null && tags.Count > 0)
+                ? all.Where(w => MatchesTags(w.Tags, tags)).ToList()
+                : all;
+
+            var today = DateTime.UtcNow.Date;
+            var due   = pool.Where(w => w.NextReview.Date <= today).OrderBy(w => w.NextReview).ToList();
+
+            if (due.Count >= count) return due.Take(count).ToList();
+
+            var dueIds = due.Select(w => w.Id).ToHashSet();
+            var extra  = pool
+                .Where(w => !dueIds.Contains(w.Id))
+                .OrderBy(w => w.NextReview)
+                .Take(count - due.Count)
+                .ToList();
+
+            return due.Concat(extra).ToList();
+        }
+
+
         public async Task<List<WordCard>> SearchAsync(string query)
         {
             await using var ctx = Ctx();
             return await ctx.WordCards
                 .Where(w => w.German.Contains(query) || w.English.Contains(query) || w.Ukrainian.Contains(query))
                 .ToListAsync();
-        }
-
-        public async Task<List<WordCard>> GetSessionWordsAsync(int count, Language questionLang, Language answerLang)
-        {
-            var due = await GetDueTodayAsync();
-            if (due.Count >= count) return due.Take(count).ToList();
-
-            var existingIds = due.Select(w => w.Id).ToHashSet();
-            await using var ctx = Ctx();
-            var extra = await ctx.WordCards
-                .Where(w => !existingIds.Contains(w.Id))
-                .OrderBy(w => w.NextReview)
-                .Take(count - due.Count)
-                .ToListAsync();
-
-            return due.Concat(extra).ToList();
         }
 
         public async Task<bool> ExistsAsync(string german)

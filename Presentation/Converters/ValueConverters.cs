@@ -128,6 +128,20 @@ namespace VocabTrainer.Presentation.Converters
         public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
     }
 
+    /// <summary>Converts int count to Visibility. 0 → Collapsed, >0 → Visible. Parameter "inverse" flips it.</summary>
+    public class CountToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int count = value is int i ? i : 0;
+            bool inverse = parameter?.ToString() == "inverse";
+            bool visible = count > 0;
+            if (inverse) visible = !visible;
+            return visible ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Converts a percentage (0–100 double) to a GridLength star value.
     /// A value of 0 returns GridLength(0) so the column collapses completely.

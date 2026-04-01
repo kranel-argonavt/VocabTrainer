@@ -34,6 +34,12 @@ namespace VocabTrainer.Common
         public const string Training_WordsPerSession = nameof(Training_WordsPerSession);
         public const string Training_StartSession  = nameof(Training_StartSession);
         public const string Training_ModeLabel      = nameof(Training_ModeLabel);
+        public const string Training_FilterLabel     = nameof(Training_FilterLabel);
+        public const string Training_FilterSearch    = nameof(Training_FilterSearch);
+        public const string Training_FilterSelected  = nameof(Training_FilterSelected);
+        public const string Training_FilterAll       = nameof(Training_FilterAll);
+        public const string Training_FilterFound     = nameof(Training_FilterFound);
+        public const string Training_FilterNone      = nameof(Training_FilterNone);
         public const string Training_LangLabel      = nameof(Training_LangLabel);
         public const string Training_QuestionLang   = nameof(Training_QuestionLang);
         public const string Training_AnswerLang     = nameof(Training_AnswerLang);
