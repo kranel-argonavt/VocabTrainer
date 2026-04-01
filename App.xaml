@@ -17,6 +17,7 @@
             <converters:DifficultyToColorConverter        x:Key="DifficultyToColor"/>
             <converters:PercentageToWidthConverter        x:Key="PercentageToWidth"/>
             <converters:MultipleChoiceColorConverter      x:Key="McColor"/>
+            <converters:CountToVisibilityConverter        x:Key="CountToVisibility"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

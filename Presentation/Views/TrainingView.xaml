@@ -8,8 +8,9 @@
 
         <!-- Config screen -->
         <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
                       Visibility="{Binding IsConfiguring, Converter={StaticResource BoolToVisibility}}">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center"
                         MaxWidth="900" Margin="24">
 
                 <TextBlock Text="{loc:Loc Training_StartTitle}" FontSize="30" FontWeight="Bold"
@@ -20,16 +21,18 @@
                            HorizontalAlignment="Center" Margin="0,0,0,24"/>
 
                 <!-- Two-column layout -->
-                <Grid Margin="0,0,0,12">
+                <Grid Margin="0,0,0,12" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="16"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- LEFT: Languages + Words per session -->
-                    <Grid Grid.Column="0">
+                    <!-- LEFT: Languages + Words per session + Tag filter -->
+                    <Grid Grid.Column="0" VerticalAlignment="Top">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="12"/>
                             <RowDefinition Height="Auto"/>
@@ -96,10 +99,141 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <!-- Tag filter -->
+                        <Border Grid.Row="4" Style="{StaticResource Card}">
+                            <StackPanel>
+                                <!-- Header: title + found counter -->
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="{loc:Loc Training_FilterLabel}"
+                                               FontSize="15" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                    <!-- Counter: visible only when tags selected -->
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                Visibility="{Binding SelectedTags.Count,
+                                                    Converter={StaticResource CountToVisibility}}">
+                                        <TextBlock Text="{loc:Loc Training_FilterFound}" FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                        <TextBlock Text="{Binding FilteredWordCount}" FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource AccentBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Empty state -->
+                                <TextBlock Text="{loc:Loc Training_FilterNone}"
+                                           FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"
+                                           HorizontalAlignment="Center" Margin="0,4,0,4"
+                                           Visibility="{Binding AvailableTags.Count,
+                                                        Converter={StaticResource CountToVisibility},
+                                                        ConverterParameter=inverse}"/>
+
+                                <!-- Content: search + chips -->
+                                <StackPanel Visibility="{Binding AvailableTags.Count,
+                                                          Converter={StaticResource CountToVisibility}}">
+
+                                    <!-- Search box -->
+                                    <TextBox Style="{StaticResource ModernTextBox}"
+                                             Text="{Binding TagSearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                             Tag="{loc:Loc Training_FilterSearch}"
+                                             Margin="0,0,0,10" Padding="8,6"/>
+
+                                    <!-- Pinned selected tags -->
+                                    <StackPanel Margin="0,0,0,8">
+                                        <TextBlock Text="{loc:Loc Training_FilterSelected}"
+                                                   FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   Margin="0,0,0,6"
+                                                   Visibility="{Binding SelectedTags.Count,
+                                                       Converter={StaticResource CountToVisibility}}"/>
+                                        <ItemsControl ItemsSource="{Binding SelectedTags}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border CornerRadius="12" Margin="0,0,6,6"
+                                                            Padding="10,4"
+                                                            Background="{DynamicResource PrimaryBrush}"
+                                                            Cursor="Hand">
+                                                        <Border.InputBindings>
+                                                            <MouseBinding MouseAction="LeftClick"
+                                                                          Command="{Binding DataContext.ToggleTagCommand,
+                                                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                          CommandParameter="{Binding}"/>
+                                                        </Border.InputBindings>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Name}" FontSize="12"
+                                                                       FontWeight="SemiBold" Foreground="White"/>
+                                                            <TextBlock Text=" ✕" FontSize="11" Foreground="White"
+                                                                       Opacity="0.8"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+
+                                    <!-- All tags (filtered by search, excluding selected) -->
+                                    <TextBlock Text="{loc:Loc Training_FilterAll}"
+                                               FontSize="11" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               Margin="0,0,0,6"/>
+                                    <ItemsControl ItemsSource="{Binding AvailableTags}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="12" Margin="0,0,6,6"
+                                                        Padding="10,4" Cursor="Hand">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{DynamicResource HoverBrush}"/>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <Border.InputBindings>
+                                                        <MouseBinding MouseAction="LeftClick"
+                                                                      Command="{Binding DataContext.ToggleTagCommand,
+                                                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                      CommandParameter="{Binding}"/>
+                                                    </Border.InputBindings>
+                                                    <TextBlock Text="{Binding Name}" FontSize="12"
+                                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </Border>
+
                     </Grid>
 
                     <!-- RIGHT: Training mode -->
-                    <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
                         <StackPanel>
                             <TextBlock Text="{loc:Loc Training_ModeLabel}" FontSize="15" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,14"/>
