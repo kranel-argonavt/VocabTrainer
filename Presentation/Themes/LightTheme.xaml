@@ -30,6 +30,8 @@
     <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource HoverColor}"/>
     <SolidColorBrush x:Key="NavTextBrush" Color="White"/>
     <SolidColorBrush x:Key="NavHoverBrush" Color="#3D5166"/>
+    <SolidColorBrush x:Key="SuccessBackgroundBrush" Color="#E8F8F0"/>
+    <SolidColorBrush x:Key="SuccessForegroundBrush" Color="{StaticResource AccentColor}"/>
 
     <!-- DataGrid specific -->
     <SolidColorBrush x:Key="DataGridLineBrush"       Color="#D0D7E3"/>

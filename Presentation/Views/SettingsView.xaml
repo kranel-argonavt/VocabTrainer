@@ -60,7 +60,7 @@
                 <StackPanel>
                     <TextBlock Style="{StaticResource HeadingText}" FontSize="16" Text="{loc:Loc Settings_Appearance}"/>
                     <CheckBox Content="{loc:Loc Settings_DarkTheme}" IsChecked="{Binding DarkTheme}" Margin="0,0,0,10"/>
-                    <CheckBox Content="{loc:Loc Settings_EnableTts}" IsChecked="{Binding EnableTts}" Margin="0,0,0,10"/>
+                    <!-- <CheckBox Content="{loc:Loc Settings_EnableTts}" IsChecked="{Binding EnableTts}" Margin="0,0,0,10"/> -->
                     <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_Language}"/>
                     <ComboBox ItemsSource="{Binding AppLanguages}" SelectedItem="{Binding InterfaceLanguage}"
                               Width="220" HorizontalAlignment="Left"/>
@@ -77,11 +77,11 @@
                 </Button>
             </StackPanel>
             <!-- Status bar -->
-            <Border Margin="8,0,8,16" Padding="14,8" CornerRadius="8"
-                    Background="#E8F8F0"
-                    Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibility}}">
-                <TextBlock Text="{Binding StatusMessage}" FontSize="13"
-                           Foreground="#27AE60" FontWeight="SemiBold"/>
+            <Border Margin="8,0,8,16" Padding="14,8" CornerRadius="8" Background="{DynamicResource SuccessBackgroundBrush}"
+                Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibility}}">
+
+                <TextBlock Text="{Binding StatusMessage}" FontSize="13" Foreground="{DynamicResource SuccessForegroundBrush}" 
+                    FontWeight="SemiBold"/>
             </Border>
 
         </StackPanel>
