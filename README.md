@@ -22,13 +22,32 @@ VocabTrainer is a local-first Windows application for learning vocabulary with s
 
 ## Screenshots
 
-| Home | Training setup |
-| --- | --- |
-| ![Home dashboard](assets/screenshots/home-dashboard.png) | ![Training setup](assets/screenshots/training-setup.png) |
-
-| Active session | Statistics |
-| --- | --- |
-| ![Training session](assets/screenshots/training-session.png) | ![Statistics overview](assets/screenshots/statistics-overview.png) |
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/screenshots/home-dashboard.png" alt="Home dashboard" width="100%" />
+      <br />
+      <sub><strong>Home dashboard</strong></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/screenshots/training-setup.png" alt="Training setup" width="100%" />
+      <br />
+      <sub><strong>Training setup</strong></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="assets/screenshots/training-session.png" alt="Training session" width="100%" />
+      <br />
+      <sub><strong>Active training session</strong></sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="assets/screenshots/statistics-overview.png" alt="Statistics overview" width="100%" />
+      <br />
+      <sub><strong>Statistics overview</strong></sub>
+    </td>
+  </tr>
+</table>
 
 ## Features
 
@@ -56,7 +75,7 @@ VocabTrainer is a local-first Windows application for learning vocabulary with s
 - Add, edit, and delete words
 - Search across stored vocabulary
 - Filter by tag
-- Sort by German, difficulty, next review date, or review count
+- Sort by difficulty, next review date, or review count
 - Select multiple rows for bulk actions
 - Reset progress for individual words
 - Export data to CSV or Excel
