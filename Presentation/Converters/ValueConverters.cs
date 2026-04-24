@@ -157,4 +157,41 @@ namespace VocabTrainer.Presentation.Converters
         }
         public object ConvertBack(object v, Type t, object p, CultureInfo c) => throw new NotImplementedException();
     }
+
+    public class SliderValueToCanvasLeftConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length < 4
+                || values[0] is not int currentValue
+                || values[1] is not int min
+                || values[2] is not int max
+                || values[3] is not double actualWidth)
+            {
+                return 0.0;
+            }
+
+            if (max <= min || actualWidth <= 0)
+                return 0.0;
+
+            const double labelWidth = 20.0;
+            const double reservedSpace = 10.0;
+            const double edgeNudge = 4.0;
+
+            double usableWidth = Math.Max(0, actualWidth - reservedSpace);
+            double ratio = (double)(currentValue - min) / (max - min);
+            double centerX = reservedSpace / 2 + (usableWidth * ratio);
+            double left = centerX - (labelWidth / 2);
+
+            if (currentValue == min)
+                left -= edgeNudge;
+            else if (currentValue == max)
+                left += edgeNudge;
+
+            return Math.Max(-edgeNudge, Math.Min(actualWidth - labelWidth + edgeNudge, left));
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
+            Array.Empty<object>();
+    }
 }

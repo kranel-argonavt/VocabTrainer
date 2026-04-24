@@ -15,7 +15,7 @@
                     <ComboBox ItemsSource="{Binding TrainingModes}" SelectedItem="{Binding DefaultTrainingMode}" Width="220" HorizontalAlignment="Left"/>
                     <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:Loc Settings_WordsPerSession}"/>
                     <StackPanel Orientation="Horizontal">
-                        <Slider Value="{Binding WordsPerSession}" Minimum="5" Maximum="50" Width="250" VerticalAlignment="Center"/>
+                        <Slider Value="{Binding WordsPerSession}" Minimum="5" Maximum="50" TickFrequency="1" IsSnapToTickEnabled="True" Width="250" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding WordsPerSession}" Margin="12,0,0,0" FontWeight="Bold" FontSize="16"
                                    Foreground="{DynamicResource PrimaryBrush}" VerticalAlignment="Center"/>
                     </StackPanel>
@@ -79,9 +79,9 @@
             <!-- Status bar -->
             <Border Margin="8,0,8,16" Padding="14,8" CornerRadius="8" Background="{DynamicResource SuccessBackgroundBrush}"
                 Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibility}}">
-
+                
                 <TextBlock Text="{Binding StatusMessage}" FontSize="13" Foreground="{DynamicResource SuccessForegroundBrush}" 
-                    FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"/>
             </Border>
 
         </StackPanel>

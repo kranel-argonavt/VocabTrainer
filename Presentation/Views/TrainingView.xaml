@@ -82,15 +82,43 @@
                                                    FontWeight="Bold" Foreground="White"/>
                                     </Border>
                                 </Grid>
-                                <Slider Value="{Binding WordsPerSession}" Minimum="5" Maximum="50"
-                                        TickFrequency="5" IsSnapToTickEnabled="True"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                                    <TextBlock Text="5" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
-                                    <TextBlock Text="25" Margin="98,0,0,0"
-                                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
-                                    <TextBlock Text="50" Margin="98,0,0,0"
-                                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/>
-                                </StackPanel>
+                                <Slider x:Name="WordsPerSessionSlider"
+                                        Value="{Binding WordsPerSession}"
+                                        Minimum="{Binding MinWordsPerSession}"
+                                        Maximum="{Binding MaxWordsPerSession}"
+                                        TickFrequency="1"
+                                        IsSnapToTickEnabled="True"
+                                        TickPlacement="BottomRight"/>
+                                <ItemsControl ItemsSource="{Binding WordsScaleLabels}" Margin="0,8,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas Height="18"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ContentPresenter}">
+                                            <Setter Property="Canvas.Left">
+                                                <Setter.Value>
+                                                    <MultiBinding Converter="{StaticResource SliderValueToCanvasLeft}">
+                                                        <Binding Path="Value"/>
+                                                        <Binding Path="DataContext.MinWordsPerSession" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                                        <Binding Path="DataContext.MaxWordsPerSession" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                                        <Binding ElementName="WordsPerSessionSlider" Path="ActualWidth"/>
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Width="20"
+                                                       Text="{Binding Value}"
+                                                       TextAlignment="Center"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                                       FontSize="11"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </StackPanel>
                         </Border>
 
@@ -528,6 +556,7 @@
                 <Button Style="{StaticResource PrimaryButton}"
                         Command="{Binding StartSessionCommand}"
                         Content="{loc:Loc Training_StartSession}"
+                        IsEnabled="{Binding HasAvailableWords}"
                         Height="54" FontSize="17" Margin="0,0,0,32"/>
 
             </StackPanel>

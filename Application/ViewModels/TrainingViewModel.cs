@@ -13,6 +13,9 @@ namespace VocabTrainer.Application.ViewModels
 {
     public partial class TrainingViewModel : BaseViewModel
     {
+        private const int BaseMinimumWordsPerSession = 5;
+        private const int AbsoluteMaximumWordsPerSession = 50;
+
         private readonly ITrainingService _trainingService;
         private readonly ISettingsRepository _settingsRepo;
         private readonly Random _rng = new();
@@ -25,6 +28,12 @@ namespace VocabTrainer.Application.ViewModels
         // ── Config screen ──────────────────────────────────────────────────────
         [ObservableProperty] private bool _isConfiguring = true;
         [ObservableProperty] private int  _wordsPerSession = 10;
+        [ObservableProperty] private int  _maxWordsPerSession = AbsoluteMaximumWordsPerSession;
+
+        public int MinWordsPerSession => Math.Min(BaseMinimumWordsPerSession, MaxWordsPerSession);
+        public int MidWordsPerSession => CalculateMidWordsPerSession(MinWordsPerSession, MaxWordsPerSession);
+        public bool HasAvailableWords => FilteredWordCount > 0;
+        public ObservableCollection<WordsScaleLabel> WordsScaleLabels { get; } = new();
 
         // ── Language selection ─────────────────────────────────────────────────
         [ObservableProperty] private Language _questionLanguage = Language.German;
@@ -56,6 +65,19 @@ namespace VocabTrainer.Application.ViewModels
         public ObservableCollection<TagItem> SelectedTags   { get; } = new();
 
         partial void OnTagSearchQueryChanged(string value) => ApplyTagSearch();
+        partial void OnWordsPerSessionChanged(int value) => CoerceWordsPerSession();
+        partial void OnFilteredWordCountChanged(int value)
+        {
+            UpdateWordsPerSessionRange(value);
+            OnPropertyChanged(nameof(HasAvailableWords));
+        }
+        partial void OnMaxWordsPerSessionChanged(int value)
+        {
+            OnPropertyChanged(nameof(MinWordsPerSession));
+            OnPropertyChanged(nameof(MidWordsPerSession));
+            RefreshWordsScaleLabels();
+            CoerceWordsPerSession();
+        }
 
         private void ApplyTagSearch()
         {
@@ -85,6 +107,49 @@ namespace VocabTrainer.Application.ViewModels
             var tags = SelectedTags.Select(t => t.Name).ToList();
             FilteredWordCount = await _trainingService.GetFilteredCountAsync(tags);
         }
+
+        private void UpdateWordsPerSessionRange(int availableWords)
+        {
+            MaxWordsPerSession = Math.Clamp(
+                availableWords > 0 ? availableWords : BaseMinimumWordsPerSession,
+                1,
+                AbsoluteMaximumWordsPerSession);
+        }
+
+        private void CoerceWordsPerSession()
+        {
+            var clamped = Math.Clamp(WordsPerSession, MinWordsPerSession, MaxWordsPerSession);
+            if (clamped != WordsPerSession)
+            {
+                WordsPerSession = clamped;
+                return;
+            }
+
+            _settings.WordsPerSession = clamped;
+        }
+
+        private static int CalculateMidWordsPerSession(int min, int max)
+        {
+            if (max <= min)
+                return max;
+
+            return min + ((max - min) / 2);
+        }
+
+        private void RefreshWordsScaleLabels()
+        {
+            WordsScaleLabels.Clear();
+
+            int min = MinWordsPerSession;
+            int max = MaxWordsPerSession;
+
+            for (int value = min; value <= max; value += 5)
+                WordsScaleLabels.Add(new WordsScaleLabel(value));
+
+            if (WordsScaleLabels.Count == 0 || WordsScaleLabels[^1].Value != max)
+                WordsScaleLabels.Add(new WordsScaleLabel(max));
+        }
+
 
         // ── Card state ─────────────────────────────────────────────────────────
         [ObservableProperty] private WordCard? _currentCard;
@@ -120,6 +185,7 @@ namespace VocabTrainer.Application.ViewModels
         {
             _trainingService = trainingService;
             _settingsRepo = settingsRepo;
+            RefreshWordsScaleLabels();
         }
 
         // ── Entry point: load settings and show config screen ──────────────────
@@ -161,9 +227,15 @@ namespace VocabTrainer.Application.ViewModels
         [RelayCommand]
         private async Task StartSession()
         {
+            if (!HasAvailableWords)
+                return;
+
+            WordsPerSession = Math.Clamp(WordsPerSession, MinWordsPerSession, MaxWordsPerSession);
+
             // Save selected languages to settings
             _settings.QuestionLanguage = QuestionLanguage;
             _settings.AnswerLanguage   = AnswerLanguage;
+            _settings.WordsPerSession  = WordsPerSession;
             await _settingsRepo.SaveAsync(_settings);
 
             IsConfiguring = false;
@@ -337,5 +409,15 @@ namespace VocabTrainer.Application.ViewModels
                 TimerActive = false;
             }, CancellationToken.None);
         }
+    }
+
+    public sealed class WordsScaleLabel
+    {
+        public WordsScaleLabel(int value)
+        {
+            Value = value;
+        }
+
+        public int Value { get; }
     }
 }
