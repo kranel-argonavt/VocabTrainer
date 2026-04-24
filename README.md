@@ -1,75 +1,97 @@
 # VocabTrainer
 
-> Desktop flashcard app for learning vocabulary — spaced repetition,
-> four training modes, bilingual UI (EN/UA), dark and light themes.
+Desktop vocabulary trainer built with WPF and .NET 8.
+
+VocabTrainer is a local-first Windows application for learning vocabulary with spaced repetition, multiple training modes, import/export tools, and lightweight progress tracking. It is designed for fast everyday practice without accounts, cloud sync, or external services.
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple)
+![UI](https://img.shields.io/badge/UI-WPF-orange)
+![Database](https://img.shields.io/badge/database-SQLite-0f7b0f)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Language](https://img.shields.io/badge/language-C%23%20%2F%20WPF-orange)
 
----
+## Highlights
 
-## Table of Contents
+- Local-first architecture with SQLite storage
+- SM-2-inspired spaced repetition scheduling
+- Four training modes: Flashcard, Multiple Choice, Text Input, Mixed
+- German, English, and Ukrainian study data support
+- English and Ukrainian interface localization
+- CSV and Excel import/export
+- Dark and light themes
 
-- [Overview](#overview)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Training Modes](#training-modes)
-- [SM-2 Spaced Repetition](#sm-2-spaced-repetition)
-- [Word Format & CSV Import](#word-format--csv-import)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Licence](#licence)
+## Screenshots
 
----
+| Home | Training setup |
+| --- | --- |
+| ![Home dashboard](assets/screenshots/home-dashboard.png) | ![Training setup](assets/screenshots/training-setup.png) |
 
-## Overview
-
-VocabTrainer is a local-first WPF application for learning vocabulary. It implements the **SuperMemo SM-2** spaced repetition algorithm — words you struggle with appear more often, words you know well are shown less frequently. Everything is stored in a local SQLite database; no account or internet connection required.
-
----
+| Active session | Statistics |
+| --- | --- |
+| ![Training session](assets/screenshots/training-session.png) | ![Statistics overview](assets/screenshots/statistics-overview.png) |
 
 ## Features
 
-### Core
-- **SM-2 spaced repetition** — automatic scheduling based on your performance
-- **4 training modes** — Flashcard, Multiple Choice, Text Input, Mixed
-- **Multi-variant translations** — separate answers with `/` (e.g. `go / walk`, `дім / будинок`)
-- **Streak tracking** — counts consecutive days you have practiced
+### Training
 
-### Word Management
-- Add, edit, and delete words via an inline side panel
-- Bulk operations: checkbox selection, select all / clear / invert, delete selected
-- Search, filter by tag, sort by German / Next Review / Review Count / Success Rate
-- Export to **CSV** or **Excel (.xlsx)**
+- Prioritizes due cards and fills the rest of the session from the remaining pool
+- Lets you choose question and answer languages before each session
+- Supports tag-based filtering for narrower practice sets
+- Uses a dynamic "Words per session" control that cannot exceed available words
+- Accepts slash-separated answer variants such as `cat = кіт / кішка`
+- Supports typo tolerance for text input mode
+- Optional countdown timer for non-flashcard modes
 
-### Statistics
-- KPI cards: Total Words, Learned, Accuracy %, Streak
-- Compact metrics: Due Today, Total Reviews, Not Started
-- Vocabulary progress bar — learned / in progress / not started
-- Daily activity per month
+### Training modes
 
-### Import
-- Import from **CSV** or **Excel (.xlsx)** with configurable column mapping
-- Preview before committing, duplicate detection
+| Mode | Description |
+| --- | --- |
+| Flashcard | Reveal the answer and mark whether you knew it |
+| Multiple Choice | Pick the correct translation from four options |
+| Text Input | Type the answer with configurable typo tolerance |
+| Mixed | Rotates between the three core modes during the session |
 
-### UI & Customisation
-- Full **EN / UA** bilingual interface — switch instantly in Settings
-- **Dark** and **Light** themes
-- Configurable: question/answer language pair, words per session (5–50),
-  typo tolerance (0–50%), countdown timer, Text-to-Speech
+### Word management
 
----
+- Add, edit, and delete words
+- Search across stored vocabulary
+- Filter by tag
+- Sort by German, difficulty, next review date, or review count
+- Select multiple rows for bulk actions
+- Reset progress for individual words
+- Export data to CSV or Excel
 
-## Getting Started
+### Import and data entry
+
+- Import from CSV or Excel (`.xlsx`)
+- Preview rows before import
+- Map columns for Excel imports
+- Skip duplicates that already exist in the database
+
+### Statistics and progress
+
+- Overview cards for total words, learned words, due today, reviews, streak, and accuracy
+- Vocabulary progress breakdown
+- Daily activity tracking by calendar month
+
+### Customization
+
+- Interface language: English or Ukrainian
+- Theme: light or dark
+- Default training mode
+- Default words per session
+- Text input tolerance
+- Timer duration
+
+## Getting started
 
 ### Requirements
-- Windows 10 or 11
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- Visual Studio 2022 or JetBrains Rider
 
-### Run
+- Windows 10 or Windows 11
+- .NET 8 SDK
+- Visual Studio 2022, Rider, or `dotnet` CLI
+
+### Run locally
 
 ```bash
 git clone https://github.com/kranel-argonavt/VocabTrainer.git
@@ -77,135 +99,119 @@ cd VocabTrainer
 dotnet run --project VocabTrainer
 ```
 
-On first launch the app creates `vocab.db` automatically and seeds it with sample German words. No manual database setup needed.
+On first launch the app:
 
-### Publish a self-contained executable
+- creates a local SQLite database
+- seeds the database with sample vocabulary if it is empty
+- loads saved theme and interface language settings
 
-```bash
-dotnet publish VocabTrainer -c Release -r win-x64 --self-contained true
-```
+## Data storage
 
----
+The app stores its local files in the current Windows user profile:
 
-## Training Modes
+- Database: `%AppData%\VocabTrainer\vocab.db`
+- Settings: `%AppData%\VocabTrainer\settings.json`
 
-| Mode | How it works |
-|---|---|
-| **Flashcard** | The word is shown. You think of the answer, reveal it, then mark yourself as knew it / didn't know. |
-| **Multiple Choice** | Four options are shown — pick the correct translation. |
-| **Text Input** | Type the translation. Levenshtein distance tolerance lets minor typos pass. |
-| **Mixed** | Each card is randomly assigned one of the three modes above. |
+No account, server, or internet connection is required for normal use.
 
-Before every session you choose the mode and the number of words (5–50).
+## Word format
 
----
+Each word card can store:
 
-## SM-2 Spaced Repetition
-
-Each word card stores:
-
-| Field | Description |
-|---|---|
-| `EaseFactor` | Controls how fast the interval grows. Starts at 2.5, adjusted after every review (min 1.3) |
-| `IntervalDays` | Days until next review |
-| `ReviewCount` | Total number of reviews |
-| `CorrectAnswers` / `WrongAnswers` | Raw counts used to compute `SuccessRate` |
-| `NextReview` | Scheduled review date |
-
-**Interval progression (correct answers):**
-- After review 1 → **1 day**
-- After review 2 → **6 days**
-- After review N → `previousInterval × EaseFactor`
-
-**On a wrong answer:** interval resets to **1 day**, EaseFactor drops by 0.2.
-
-A word is considered **Learned** when `SuccessRate ≥ 80%` and `ReviewCount ≥ 5`.
-
----
-
-## Word Format & CSV Import
-
-### Fields
-
-| Field | Required | Notes |
-|---|---|---|
-| German | | The word or phrase to learn |
-| English | | One or more translations |
-| Ukrainian | | One or more translations |
-| Example | | Example sentence in German |
-| Tags | | Comma-separated, e.g. `nouns,A1` |
+| German | English | Ukrainian | ExampleSentence | Tags |
+| --- | --- | --- | --- | --- |
+| Primary word or phrase | Translation field | Translation field | Optional usage example | Comma-separated categories for filtering |
 
 ### Multiple accepted answers
 
-Separate variants with `/`. During training, any variant is accepted as correct:
+Use `/` to store alternative accepted answers in one field.
 
-```
-English:    go / walk / stroll
-Ukrainian:  йти / ходити
+Examples:
+
+```text
+English: house
+Ukrainian: дім / будинок
 ```
 
 ### Example CSV
 
 ```csv
 German,English,Ukrainian,Example,Tags
-Haus,house,будинок,"Das Haus ist groß.",nouns
-gehen,"go / walk","йти / ходити","Ich gehe nach Hause.",verbs
-schön,"beautiful / lovely","гарний / чудовий","Das ist sehr schön.",adjectives
+Haus,house,дім / будинок,"Das Haus ist gross.","Noun,Home"
+neu,new,новий,"Das Auto ist neu.","Adjective,Everyday"
 ```
 
-The column separator is configurable in the Import screen.
+Note: the app's CSV parser expects five columns in this order:
+`German, English, Ukrainian, Example, Tags`.
 
----
+## Spaced repetition model
 
-## Architecture
+VocabTrainer uses a simplified SM-2-style scheduling approach:
 
-The project uses **MVVM** with strict layer separation and dependency inversion:
+- correct answers increase the review interval
+- wrong answers reset the interval to 1 day
+- ease factor is adjusted after each review
+- due cards are prioritized in session generation
 
-```
+Current default interval progression for correct answers:
+
+- Review 1: 1 day
+- Review 2: 6 days
+- Review 3+: previous interval multiplied by ease factor
+
+## Project structure
+
+The solution follows an MVVM-style layered architecture.
+
+```text
 VocabTrainer/
-├── Core/                        # Domain — no dependencies on UI or infrastructure
-│   ├── Entities/                # WordCard, AppSettings, SessionStats, GlobalStats
-│   ├── Interfaces/              # IWordCardRepository, ISettingsRepository,
-│   │                            # ITrainingService, IStatisticsService, IImportService
-│   └── Algorithms/              # Sm2Algorithm (ISpacedRepetitionService)
-│
-├── Infrastructure/              # Data access
-│   ├── Data/                    # VocabDbContext (EF Core), DatabaseSeeder
-│   ├── Repositories/            # WordCardRepository, JsonSettingsRepository
-│   └── Services/                # TrainingService, StatisticsService, ImportService
-│
-├── Application/                 # ViewModels — CommunityToolkit.Mvvm
-│   └── ViewModels/              # MainViewModel, TrainingViewModel,
-│                                # WordManagementViewModel, StatisticsViewModel,
-│                                # SettingsViewModel, ImportViewModel
-│
-├── Presentation/                # Pure XAML — no business logic
-│   ├── Views/                   # One .xaml per screen
-│   ├── Themes/                  # DarkTheme.xaml, LightTheme.xaml, Styles.xaml
-│   └── Converters/              # BoolToVisibility, NullToVisibility,
-│                                # DifficultyToColor, MultipleChoiceColor
-│
-└── Common/                      # Cross-cutting
-    ├── Strings.cs               # Centralised string key constants
-    ├── LocalizationService.cs   # EN and UA translation dictionaries
-    └── LocExtension.cs          # {loc:Loc Key} XAML markup extension
+|-- Application/
+|   `-- ViewModels/
+|-- Common/
+|-- Core/
+|   |-- Algorithms/
+|   |-- Entities/
+|   `-- Interfaces/
+|-- Infrastructure/
+|   |-- Data/
+|   |-- Repositories/
+|   `-- Services/
+|-- Presentation/
+|   |-- Converters/
+|   |-- Themes/
+|   `-- Views/
+|-- App.xaml
+`-- VocabTrainer.csproj
 ```
 
----
+### Layer responsibilities
 
-## Tech Stack
+- `Core` contains entities, contracts, and the SM-2 algorithm
+- `Infrastructure` handles SQLite, repositories, import logic, and statistics services
+- `Application` contains view models and UI-facing state
+- `Presentation` contains XAML views, styles, and value converters
+- `Common` contains localization and shared helpers
 
-| Library | Version | Purpose |
-|---|---|---|
-| .NET 8 / WPF | 8.0 | UI framework |
-| Entity Framework Core + SQLite | 8.0.0 | Local database and ORM |
-| CommunityToolkit.Mvvm | 8.2.2 | `[ObservableProperty]` and `[RelayCommand]` source generators |
-| Microsoft.Extensions.DependencyInjection | 8.0.0 | Dependency injection container |
-| ClosedXML | 0.102.1 | Excel (.xlsx) import and export |
-| System.Text.Json | 8.0.0 | Settings persistence (JSON) |
+## Tech stack
 
----
+| Technology | Purpose |
+| --- | --- |
+| .NET 8 | Application runtime |
+| WPF | Desktop UI |
+| Entity Framework Core | Data access |
+| SQLite | Local persistence |
+| CommunityToolkit.Mvvm | MVVM helpers and source generators |
+| ClosedXML | Excel import/export |
+| Microsoft.Extensions.DependencyInjection | Dependency injection |
+| LiveCharts.Wpf | Charts in the statistics view |
+| System.Text.Json | Settings persistence |
 
-## Licence
+## Scope
 
-MIT — free to use, modify, and distribute. See [LICENSE](LICENSE) for the full text.
+- Windows desktop application
+- Local storage only
+- No account or online backend required
+
+## License
+
+MIT. See [LICENSE](LICENSE) for details.
