@@ -23,8 +23,14 @@ namespace VocabTrainer.Infrastructure.Services
 
         public void UpdateSettings(AppSettings settings) => _settings = settings;
 
-        public async Task<List<WordCard>> GetSessionWordsAsync(int count) =>
-            await _repository.GetSessionWordsAsync(count, _settings.QuestionLanguage, _settings.AnswerLanguage);
+        public async Task<List<WordCard>> GetSessionWordsAsync(int count, IReadOnlyList<string>? tags = null) =>
+            await _repository.GetSessionWordsAsync(count, _settings.QuestionLanguage, _settings.AnswerLanguage, tags);
+
+        public async Task<List<string>> GetAllTagsAsync() =>
+            await _repository.GetAllTagsAsync();
+
+        public async Task<int> GetFilteredCountAsync(IReadOnlyList<string> tags) =>
+            await _repository.GetFilteredCountAsync(tags);
 
         public async Task<bool> ProcessAnswerAsync(WordCard card, bool isCorrect)
         {

@@ -13,6 +13,9 @@ namespace VocabTrainer.Application.ViewModels
 {
     public partial class TrainingViewModel : BaseViewModel
     {
+        private const int BaseMinimumWordsPerSession = 5;
+        private const int AbsoluteMaximumWordsPerSession = 50;
+
         private readonly ITrainingService _trainingService;
         private readonly ISettingsRepository _settingsRepo;
         private readonly Random _rng = new();
@@ -25,6 +28,12 @@ namespace VocabTrainer.Application.ViewModels
         // ── Config screen ──────────────────────────────────────────────────────
         [ObservableProperty] private bool _isConfiguring = true;
         [ObservableProperty] private int  _wordsPerSession = 10;
+        [ObservableProperty] private int  _maxWordsPerSession = AbsoluteMaximumWordsPerSession;
+
+        public int MinWordsPerSession => Math.Min(BaseMinimumWordsPerSession, MaxWordsPerSession);
+        public int MidWordsPerSession => CalculateMidWordsPerSession(MinWordsPerSession, MaxWordsPerSession);
+        public bool HasAvailableWords => FilteredWordCount > 0;
+        public ObservableCollection<WordsScaleLabel> WordsScaleLabels { get; } = new();
 
         // ── Language selection ─────────────────────────────────────────────────
         [ObservableProperty] private Language _questionLanguage = Language.German;
@@ -44,6 +53,103 @@ namespace VocabTrainer.Application.ViewModels
             if (QuestionLanguage == value)
                 QuestionLanguage = AvailableLanguages.First(l => l != value);
         }
+
+        // ── Tag filter ────────────────────────────────────────────────────────
+        [ObservableProperty] private string _tagSearchQuery = string.Empty;
+        [ObservableProperty] private int    _filteredWordCount;
+
+        /// <summary>All tags from DB, filtered by TagSearchQuery for display.</summary>
+        public ObservableCollection<TagItem> AvailableTags  { get; } = new();
+
+        /// <summary>Tags the user has pinned/selected.</summary>
+        public ObservableCollection<TagItem> SelectedTags   { get; } = new();
+
+        partial void OnTagSearchQueryChanged(string value) => ApplyTagSearch();
+        partial void OnWordsPerSessionChanged(int value) => CoerceWordsPerSession();
+        partial void OnFilteredWordCountChanged(int value)
+        {
+            UpdateWordsPerSessionRange(value);
+            OnPropertyChanged(nameof(HasAvailableWords));
+        }
+        partial void OnMaxWordsPerSessionChanged(int value)
+        {
+            OnPropertyChanged(nameof(MinWordsPerSession));
+            OnPropertyChanged(nameof(MidWordsPerSession));
+            RefreshWordsScaleLabels();
+            CoerceWordsPerSession();
+        }
+
+        private void ApplyTagSearch()
+        {
+            var q = TagSearchQuery.Trim().ToLowerInvariant();
+            foreach (var tag in AvailableTags)
+                tag.IsVisible = q.Length == 0 || tag.Name.ToLowerInvariant().Contains(q);
+        }
+
+        [RelayCommand]
+        private async Task ToggleTag(TagItem tag)
+        {
+            if (SelectedTags.Contains(tag))
+            {
+                SelectedTags.Remove(tag);
+                tag.IsSelected = false;
+            }
+            else
+            {
+                SelectedTags.Add(tag);
+                tag.IsSelected = true;
+            }
+            await RefreshFilteredCountAsync();
+        }
+
+        private async Task RefreshFilteredCountAsync()
+        {
+            var tags = SelectedTags.Select(t => t.Name).ToList();
+            FilteredWordCount = await _trainingService.GetFilteredCountAsync(tags);
+        }
+
+        private void UpdateWordsPerSessionRange(int availableWords)
+        {
+            MaxWordsPerSession = Math.Clamp(
+                availableWords > 0 ? availableWords : BaseMinimumWordsPerSession,
+                1,
+                AbsoluteMaximumWordsPerSession);
+        }
+
+        private void CoerceWordsPerSession()
+        {
+            var clamped = Math.Clamp(WordsPerSession, MinWordsPerSession, MaxWordsPerSession);
+            if (clamped != WordsPerSession)
+            {
+                WordsPerSession = clamped;
+                return;
+            }
+
+            _settings.WordsPerSession = clamped;
+        }
+
+        private static int CalculateMidWordsPerSession(int min, int max)
+        {
+            if (max <= min)
+                return max;
+
+            return min + ((max - min) / 2);
+        }
+
+        private void RefreshWordsScaleLabels()
+        {
+            WordsScaleLabels.Clear();
+
+            int min = MinWordsPerSession;
+            int max = MaxWordsPerSession;
+
+            for (int value = min; value <= max; value += 5)
+                WordsScaleLabels.Add(new WordsScaleLabel(value));
+
+            if (WordsScaleLabels.Count == 0 || WordsScaleLabels[^1].Value != max)
+                WordsScaleLabels.Add(new WordsScaleLabel(max));
+        }
+
 
         // ── Card state ─────────────────────────────────────────────────────────
         [ObservableProperty] private WordCard? _currentCard;
@@ -79,6 +185,7 @@ namespace VocabTrainer.Application.ViewModels
         {
             _trainingService = trainingService;
             _settingsRepo = settingsRepo;
+            RefreshWordsScaleLabels();
         }
 
         // ── Entry point: load settings and show config screen ──────────────────
@@ -90,6 +197,21 @@ namespace VocabTrainer.Application.ViewModels
             WordsPerSession  = _settings.WordsPerSession;
             QuestionLanguage = _settings.QuestionLanguage;
             AnswerLanguage   = _settings.AnswerLanguage;
+
+            // Load tags from DB — preserve selected ones across sessions within same app run
+            var selected = SelectedTags.Select(t => t.Name).ToHashSet();
+            var allTags  = await _trainingService.GetAllTagsAsync();
+            AvailableTags.Clear();
+            foreach (var name in allTags)
+            {
+                var item = new TagItem(name) { IsSelected = selected.Contains(name) };
+                AvailableTags.Add(item);
+                if (item.IsSelected && !SelectedTags.Any(t => t.Name == name))
+                    SelectedTags.Add(item);
+            }
+            ApplyTagSearch();
+            await RefreshFilteredCountAsync();
+
             SessionComplete  = false;
             IsLoading        = false;
             IsConfiguring    = true;
@@ -105,14 +227,23 @@ namespace VocabTrainer.Application.ViewModels
         [RelayCommand]
         private async Task StartSession()
         {
+            if (!HasAvailableWords)
+                return;
+
+            WordsPerSession = Math.Clamp(WordsPerSession, MinWordsPerSession, MaxWordsPerSession);
+
             // Save selected languages to settings
             _settings.QuestionLanguage = QuestionLanguage;
             _settings.AnswerLanguage   = AnswerLanguage;
+            _settings.WordsPerSession  = WordsPerSession;
             await _settingsRepo.SaveAsync(_settings);
 
             IsConfiguring = false;
             IsLoading = true;
-            _sessionWords = await _trainingService.GetSessionWordsAsync(WordsPerSession);
+            var tags = SelectedTags.Count > 0
+                ? SelectedTags.Select(t => t.Name).ToList()
+                : null;
+            _sessionWords = await _trainingService.GetSessionWordsAsync(WordsPerSession, tags);
             _currentIndex = 0;
             _sessionStart = DateTime.Now;
             SessionCorrect = 0;
@@ -280,12 +411,13 @@ namespace VocabTrainer.Application.ViewModels
         }
     }
 
-    public partial class MultipleChoiceOption : ObservableObject
+    public sealed class WordsScaleLabel
     {
-        [ObservableProperty] private string _text = string.Empty;
-        [ObservableProperty] private bool _isCorrect;
-        [ObservableProperty] private bool _isSelected;
-        [ObservableProperty] private bool _showResult;
-        public WordCard Card { get; set; } = null!;
+        public WordsScaleLabel(int value)
+        {
+            Value = value;
+        }
+
+        public int Value { get; }
     }
 }

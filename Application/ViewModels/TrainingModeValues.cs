@@ -1,12 +1,23 @@
-using System.Collections.ObjectModel;
-using VocabTrainer.Core.Entities;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace VocabTrainer.Application.ViewModels
 {
-    // Helper for XAML binding
-    public static class TrainingModeValues
+    public partial class MultipleChoiceOption : ObservableObject
     {
-        public static ObservableCollection<TrainingMode> All { get; } =
-            new(System.Enum.GetValues<TrainingMode>());
+        [ObservableProperty] private string _text = string.Empty;
+        [ObservableProperty] private bool _isCorrect;
+        [ObservableProperty] private bool _isSelected;
+        [ObservableProperty] private bool _showResult;
+        public VocabTrainer.Core.Entities.WordCard Card { get; set; } = null!;
+    }
+
+    public partial class TagItem : ObservableObject
+    {
+        public string Name { get; }
+
+        [ObservableProperty] private bool _isSelected;
+        [ObservableProperty] private bool _isVisible = true;
+
+        public TagItem(string name) => Name = name;
     }
 }

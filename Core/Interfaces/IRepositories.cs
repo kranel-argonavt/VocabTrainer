@@ -11,8 +11,10 @@ namespace VocabTrainer.Core.Interfaces
         Task<WordCard?> GetByIdAsync(int id);
         Task<List<WordCard>> GetDueTodayAsync();
         Task<List<WordCard>> GetByTagAsync(string tag);
+        Task<List<string>> GetAllTagsAsync();
+        Task<int> GetFilteredCountAsync(IReadOnlyList<string> tags);
         Task<List<WordCard>> SearchAsync(string query);
-        Task<List<WordCard>> GetSessionWordsAsync(int count, Language questionLang, Language answerLang);
+        Task<List<WordCard>> GetSessionWordsAsync(int count, Language questionLang, Language answerLang, IReadOnlyList<string>? tags = null);
         Task<bool> ExistsAsync(string german);
         Task AddAsync(WordCard card);
         Task AddRangeAsync(IEnumerable<WordCard> cards);
